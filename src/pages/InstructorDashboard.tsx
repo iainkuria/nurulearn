@@ -1,12 +1,51 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, BookOpen, Video, FileText, Users } from "lucide-react";
+import { LogOut, BookOpen, Video, FileText, Users, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { CourseManager } from "@/components/CourseManager";
+import { FileUploadManager } from "@/components/FileUploadManager";
+import { QuizCreator } from "@/components/QuizCreator";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const InstructorDashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const [stats, setStats] = useState({ courses: 0, videos: 0, materials: 0, students: 0 });
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const [courses, videos, materials, enrollments] = await Promise.all([
+        supabase.from("courses").select("*", { count: "exact" }).eq("instructor_id", user.id),
+        supabase.from("videos").select("*", { count: "exact" }).eq("uploaded_by", user.id),
+        supabase.from("notes").select("*", { count: "exact" }).eq("uploaded_by", user.id),
+        supabase.from("enrollments")
+          .select("*", { count: "exact" })
+          .in("course_id", (await supabase.from("courses").select("id").eq("instructor_id", user.id)).data?.map(c => c.id) || []),
+      ]);
+
+      setStats({
+        courses: courses.count || 0,
+        videos: videos.count || 0,
+        materials: materials.count || 0,
+        students: enrollments.count || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -41,7 +80,7 @@ const InstructorDashboard = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">{stats.courses}</div>
               <p className="text-xs text-muted-foreground">Courses created</p>
             </CardContent>
           </Card>
@@ -54,7 +93,7 @@ const InstructorDashboard = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">{stats.videos}</div>
               <p className="text-xs text-muted-foreground">Videos uploaded</p>
             </CardContent>
           </Card>
@@ -67,7 +106,7 @@ const InstructorDashboard = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">{stats.materials}</div>
               <p className="text-xs text-muted-foreground">Study materials</p>
             </CardContent>
           </Card>
@@ -80,40 +119,55 @@ const InstructorDashboard = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">{stats.students}</div>
               <p className="text-xs text-muted-foreground">Total enrollments</p>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>My Courses</CardTitle>
-              <CardDescription>Manage your courses</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No courses created yet.</p>
-                <Button className="mt-4">Create Your First Course</Button>
-              </div>
-            </CardContent>
-          </Card>
+        <CourseManager />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Latest student interactions</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No recent activity.</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <Card className="mt-8">
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <CardTitle>Course Content Management</CardTitle>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Content
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogTitle>Add Course Content</DialogTitle>
+                  {selectedCourseId ? (
+                    <Tabs defaultValue="files">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="files">Upload Files</TabsTrigger>
+                        <TabsTrigger value="quiz">Create Quiz</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="files">
+                        <FileUploadManager courseId={selectedCourseId} />
+                      </TabsContent>
+                      <TabsContent value="quiz">
+                        <QuizCreator courseId={selectedCourseId} onSuccess={() => setDialogOpen(false)} />
+                      </TabsContent>
+                    </Tabs>
+                  ) : (
+                    <p className="text-center py-8 text-muted-foreground">
+                      Please select a course first to add content
+                    </p>
+                  )}
+                </DialogContent>
+              </Dialog>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Select a course from the list above, then click "Add Content" to upload videos, notes, or create quizzes.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
