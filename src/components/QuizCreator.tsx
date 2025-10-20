@@ -60,7 +60,7 @@ export const QuizCreator = ({ courseId, onSuccess }: QuizCreatorProps) => {
         .insert({
           course_id: courseId,
           title,
-          questions: questions,
+          questions: JSON.parse(JSON.stringify(questions)),
           created_by: user.id,
         });
 
