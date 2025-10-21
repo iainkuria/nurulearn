@@ -1,9 +1,9 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, BookOpen, Video, FileText, Users, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { BookOpen, Video, FileText, Users, Plus } from "lucide-react";
+import { Navigation } from "@/components/Navigation";
+import { Button } from "@/components/ui/button";
 import { CourseManager } from "@/components/CourseManager";
 import { FileUploadManager } from "@/components/FileUploadManager";
 import { QuizCreator } from "@/components/QuizCreator";
@@ -12,8 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const InstructorDashboard = () => {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const [stats, setStats] = useState({ courses: 0, videos: 0, materials: 0, students: 0 });
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -47,23 +46,9 @@ const InstructorDashboard = () => {
     }
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/");
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/10">
-      {/* Header */}
-      <div className="border-b bg-card/50 backdrop-blur">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">NuruLearn</h1>
-          <Button onClick={handleSignOut} variant="outline" size="sm">
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <Navigation />
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
