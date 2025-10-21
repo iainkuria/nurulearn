@@ -20,6 +20,7 @@ export const FileUploadManager = ({ courseId }: FileUploadManagerProps) => {
     title: "",
     description: "",
     file: null as File | null,
+    youtubeUrl: "",
   });
   const [noteData, setNoteData] = useState({
     title: "",
@@ -29,26 +30,35 @@ export const FileUploadManager = ({ courseId }: FileUploadManagerProps) => {
 
   const handleVideoUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!videoData.file) return;
+    if (!videoData.file && !videoData.youtubeUrl) {
+      toast({ title: "Please provide either a video file or YouTube URL", variant: "destructive" });
+      return;
+    }
 
     setUploading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const fileExt = videoData.file.name.split(".").pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${courseId}/${fileName}`;
+      let videoUrl = videoData.youtubeUrl;
 
-      const { error: uploadError } = await supabase.storage
-        .from("course-videos")
-        .upload(filePath, videoData.file);
+      if (videoData.file) {
+        const fileExt = videoData.file.name.split(".").pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${courseId}/${fileName}`;
 
-      if (uploadError) throw uploadError;
+        const { error: uploadError } = await supabase.storage
+          .from("course-videos")
+          .upload(filePath, videoData.file);
 
-      const { data: { publicUrl } } = supabase.storage
-        .from("course-videos")
-        .getPublicUrl(filePath);
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("course-videos")
+          .getPublicUrl(filePath);
+
+        videoUrl = publicUrl;
+      }
 
       const { error: insertError } = await supabase
         .from("videos")
@@ -56,14 +66,14 @@ export const FileUploadManager = ({ courseId }: FileUploadManagerProps) => {
           course_id: courseId,
           title: videoData.title,
           description: videoData.description,
-          video_url: publicUrl,
+          video_url: videoUrl,
           uploaded_by: user.id,
         });
 
       if (insertError) throw insertError;
 
-      toast({ title: "Video uploaded successfully" });
-      setVideoData({ title: "", description: "", file: null });
+      toast({ title: "Video added successfully" });
+      setVideoData({ title: "", description: "", file: null, youtubeUrl: "" });
     } catch (error: any) {
       toast({
         title: "Upload failed",
@@ -165,20 +175,32 @@ export const FileUploadManager = ({ courseId }: FileUploadManagerProps) => {
                 />
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="youtube-url">YouTube URL (optional)</Label>
+                <Input
+                  id="youtube-url"
+                  type="url"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  value={videoData.youtubeUrl}
+                  onChange={(e) => setVideoData({ ...videoData, youtubeUrl: e.target.value, file: null })}
+                />
+                <p className="text-xs text-muted-foreground">Or upload a video file below</p>
+              </div>
+
               <div>
                 <Label htmlFor="video-file">Video File</Label>
                 <Input
                   id="video-file"
                   type="file"
                   accept="video/*"
-                  onChange={(e) => setVideoData({ ...videoData, file: e.target.files?.[0] || null })}
-                  required
+                  onChange={(e) => setVideoData({ ...videoData, file: e.target.files?.[0] || null, youtubeUrl: "" })}
+                  disabled={!!videoData.youtubeUrl}
                 />
               </div>
 
               <Button type="submit" disabled={uploading} className="w-full">
                 {uploading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                Upload Video
+                {videoData.youtubeUrl ? "Add YouTube Video" : "Upload Video"}
               </Button>
             </form>
           </TabsContent>

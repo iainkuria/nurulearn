@@ -1,13 +1,26 @@
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, BookOpen, DollarSign, TrendingUp, UserCog, ClipboardList, BarChart3 } from "lucide-react";
+import { Users, BookOpen, DollarSign, TrendingUp, UserCog, ClipboardList, BarChart3, Upload } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { UserManagement } from "@/components/admin/UserManagement";
+import { RoleManagement } from "@/components/admin/RoleManagement";
+import { CourseManagement } from "@/components/admin/CourseManagement";
+import { PendingApprovals } from "@/components/admin/PendingApprovals";
+import { PaymentManagement } from "@/components/admin/PaymentManagement";
+import { ReportsGenerator } from "@/components/admin/ReportsGenerator";
+import { CourseManager } from "@/components/CourseManager";
+
+type AdminView = "users" | "roles" | "courses" | "approvals" | "payments" | "reports" | "upload" | null;
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const [activeView, setActiveView] = useState<AdminView>(null);
 
   // Fetch total users count
   const { data: usersCount, isLoading: loadingUsers } = useQuery({
@@ -151,6 +164,13 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
+        <div className="mb-6">
+          <Button onClick={() => setActiveView("upload")} size="lg" className="gap-2">
+            <Upload className="w-5 h-5" />
+            Upload Course Content
+          </Button>
+        </div>
+
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <CardHeader>
@@ -164,11 +184,17 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <button className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2">
+                <button 
+                  onClick={() => setActiveView("users")}
+                  className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2"
+                >
                   <Users className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium">View All Users</span>
                 </button>
-                <button className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2">
+                <button 
+                  onClick={() => setActiveView("roles")}
+                  className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2"
+                >
                   <UserCog className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium">Manage Roles</span>
                 </button>
@@ -188,11 +214,17 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <button className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2">
+                <button 
+                  onClick={() => setActiveView("courses")}
+                  className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2"
+                >
                   <BookOpen className="w-4 h-4 text-accent-foreground" />
                   <span className="text-sm font-medium">View All Courses</span>
                 </button>
-                <button className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2">
+                <button 
+                  onClick={() => setActiveView("approvals")}
+                  className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2"
+                >
                   <ClipboardList className="w-4 h-4 text-accent-foreground" />
                   <span className="text-sm font-medium">Pending Approvals</span>
                 </button>
@@ -212,11 +244,17 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <button className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2">
+                <button 
+                  onClick={() => setActiveView("payments")}
+                  className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2"
+                >
                   <DollarSign className="w-4 h-4 text-green-600 dark:text-green-400" />
                   <span className="text-sm font-medium">View Payments</span>
                 </button>
-                <button className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2">
+                <button 
+                  onClick={() => setActiveView("reports")}
+                  className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2"
+                >
                   <BarChart3 className="w-4 h-4 text-green-600 dark:text-green-400" />
                   <span className="text-sm font-medium">Generate Reports</span>
                 </button>
@@ -225,6 +263,29 @@ const AdminDashboard = () => {
           </Card>
         </div>
       </div>
+
+      <Dialog open={activeView !== null} onOpenChange={() => setActiveView(null)}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {activeView === "users" && "User Management"}
+              {activeView === "roles" && "Role Management"}
+              {activeView === "courses" && "Course Management"}
+              {activeView === "approvals" && "Pending Approvals"}
+              {activeView === "payments" && "Payment Management"}
+              {activeView === "reports" && "Reports Generator"}
+              {activeView === "upload" && "Upload Course Content"}
+            </DialogTitle>
+          </DialogHeader>
+          {activeView === "users" && <UserManagement />}
+          {activeView === "roles" && <RoleManagement />}
+          {activeView === "courses" && <CourseManagement />}
+          {activeView === "approvals" && <PendingApprovals />}
+          {activeView === "payments" && <PaymentManagement />}
+          {activeView === "reports" && <ReportsGenerator />}
+          {activeView === "upload" && <CourseManager />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
