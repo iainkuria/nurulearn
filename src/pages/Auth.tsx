@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Header } from "@/components/Header";
 import { GraduationCap } from "lucide-react";
 
 const Auth = () => {
@@ -57,17 +58,21 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center space-y-2">
-          <div className="flex justify-center mb-2">
-            <div className="p-3 bg-primary/10 rounded-full">
-              <GraduationCap className="w-10 h-10 text-primary" />
+    <>
+      <Header />
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 px-4 py-12">
+        <Card className="w-full max-w-md shadow-xl border-none animate-scale-in">
+          <CardHeader className="text-center space-y-3 pb-6">
+            <div className="flex justify-center mb-2">
+              <div className="p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl shadow-lg">
+                <GraduationCap className="w-12 h-12 text-primary" />
+              </div>
             </div>
-          </div>
-          <CardTitle className="text-3xl font-bold">NuruLearn</CardTitle>
-          <CardDescription>Your gateway to quality education</CardDescription>
-        </CardHeader>
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Welcome Back
+            </CardTitle>
+            <CardDescription className="text-base">Sign in to continue your learning journey</CardDescription>
+          </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
@@ -147,6 +152,7 @@ const Auth = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 

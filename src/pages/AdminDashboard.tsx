@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, BookOpen, DollarSign, TrendingUp, UserCog, ClipboardList, BarChart3, Upload } from "lucide-react";
-import { Navigation } from "@/components/Navigation";
+import { Users, BookOpen, DollarSign, TrendingUp, UserCog, ClipboardList, BarChart3, Upload, Settings, FileCheck, BarChart } from "lucide-react";
+import { Header } from "@/components/Header";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -73,8 +73,8 @@ const AdminDashboard = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <Navigation />
+    <div className="min-h-screen bg-muted/30">
+      <Header />
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
