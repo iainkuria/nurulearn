@@ -1,11 +1,14 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Video, FileText, Trophy } from "lucide-react";
+import { BookOpen, Video, FileText, Trophy, Award } from "lucide-react";
 import { Header } from "@/components/Header";
 import { supabase } from "@/integrations/supabase/client";
 import { CourseCard } from "@/components/CourseCard";
 import { useToast } from "@/hooks/use-toast";
+import { PaymentHistory } from "@/components/PaymentHistory";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -13,11 +16,18 @@ const StudentDashboard = () => {
   const [stats, setStats] = useState({ enrolled: 0, videos: 0, quizzes: 0, avgScore: 0 });
   const [courses, setCourses] = useState<any[]>([]);
   const [enrolledCourses, setEnrolledCourses] = useState<Set<string>>(new Set());
+  const [myCourses, setMyCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchStats();
-    fetchCourses();
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    await Promise.all([fetchStats(), fetchCourses()]);
+    setLoading(false);
+  };
 
   const fetchStats = async () => {
     try {
@@ -31,6 +41,15 @@ const StudentDashboard = () => {
 
       const enrolledIds = enrollments.data?.map(e => e.course_id) || [];
       setEnrolledCourses(new Set(enrolledIds));
+
+      // Fetch enrolled courses with details
+      if (enrolledIds.length > 0) {
+        const { data: enrolledCoursesData } = await supabase
+          .from("courses")
+          .select("*")
+          .in("id", enrolledIds);
+        setMyCourses(enrolledCoursesData || []);
+      }
 
       const [videos, quizzes] = await Promise.all([
         supabase.from("videos").select("*", { count: "exact" }).in("course_id", enrolledIds.length ? enrolledIds : ['']),
@@ -89,8 +108,7 @@ const StudentDashboard = () => {
         }
       } else {
         toast({ title: "Successfully enrolled!" });
-        fetchStats();
-        fetchCourses();
+        fetchData();
       }
     } catch (error: any) {
       toast({
@@ -165,30 +183,94 @@ const StudentDashboard = () => {
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Available Courses</CardTitle>
-            <CardDescription>Browse and enroll in courses</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {courses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  enrolled={enrolledCourses.has(course.id)}
-                  onEnroll={handleEnroll}
-                />
-              ))}
-            </div>
-            {courses.length === 0 && (
-              <div className="text-center py-12 text-muted-foreground">
-                <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No courses available yet.</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="enrolled" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="enrolled">My Courses</TabsTrigger>
+            <TabsTrigger value="available">Browse Courses</TabsTrigger>
+            <TabsTrigger value="payments">Payment History</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="enrolled">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <BookOpen className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle>My Enrolled Courses</CardTitle>
+                    <CardDescription>Continue your learning journey</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {[...Array(3)].map((_, i) => (
+                      <Skeleton key={i} className="h-64 w-full" />
+                    ))}
+                  </div>
+                ) : myCourses.length > 0 ? (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {myCourses.map((course) => (
+                      <CourseCard
+                        key={course.id}
+                        course={course}
+                        enrolled={true}
+                        showPrice={false}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Award className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>You haven't enrolled in any courses yet.</p>
+                    <p className="text-sm mt-2">Browse available courses to get started!</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="available">
+            <Card>
+              <CardHeader>
+                <CardTitle>Available Courses</CardTitle>
+                <CardDescription>Browse and enroll in courses</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {[...Array(6)].map((_, i) => (
+                      <Skeleton key={i} className="h-64 w-full" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {courses.map((course) => (
+                      <CourseCard
+                        key={course.id}
+                        course={course}
+                        enrolled={enrolledCourses.has(course.id)}
+                        onEnroll={handleEnroll}
+                      />
+                    ))}
+                  </div>
+                )}
+                {!loading && courses.length === 0 && (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No courses available yet.</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="payments">
+            <PaymentHistory />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

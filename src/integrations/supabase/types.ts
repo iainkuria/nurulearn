@@ -20,7 +20,9 @@ export type Database = {
           description: string | null
           id: string
           instructor_id: string
+          is_free: boolean
           is_published: boolean
+          price: number | null
           thumbnail_url: string | null
           title: string
           updated_at: string
@@ -30,7 +32,9 @@ export type Database = {
           description?: string | null
           id?: string
           instructor_id: string
+          is_free?: boolean
           is_published?: boolean
+          price?: number | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string
@@ -40,7 +44,9 @@ export type Database = {
           description?: string | null
           id?: string
           instructor_id?: string
+          is_free?: boolean
           is_published?: boolean
+          price?: number | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
@@ -198,6 +204,51 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          course_id: string
+          created_at: string
+          id: string
+          user_id: string
+          video_id: string | null
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          course_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+          video_id?: string | null
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          course_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          video_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "progress_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "progress_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quiz_results: {
         Row: {

@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Video, FileText, Users, Plus } from "lucide-react";
+import { BookOpen, Video, FileText, Users, Plus, BarChart3 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { CourseManager } from "@/components/CourseManager";
@@ -10,6 +10,7 @@ import { QuizCreator } from "@/components/QuizCreator";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { InstructorAnalytics } from "@/components/InstructorAnalytics";
 
 const InstructorDashboard = () => {
   const { user } = useAuth();
@@ -56,8 +57,22 @@ const InstructorDashboard = () => {
           <p className="text-muted-foreground">{user?.email}</p>
         </div>
 
+        <Card className="mb-8 border-none shadow-lg">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <BarChart3 className="w-5 h-5 text-primary" />
+              </div>
+              <CardTitle>Analytics & Performance</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <InstructorAnalytics />
+          </CardContent>
+        </Card>
+
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <Card>
+          <Card className="border-none shadow-lg">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium">My Courses</CardTitle>
@@ -70,7 +85,7 @@ const InstructorDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-lg">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium">Videos</CardTitle>
@@ -83,7 +98,7 @@ const InstructorDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-lg">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium">Materials</CardTitle>
@@ -96,7 +111,7 @@ const InstructorDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-lg">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium">Students</CardTitle>

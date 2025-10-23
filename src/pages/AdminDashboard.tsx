@@ -15,8 +15,9 @@ import { PendingApprovals } from "@/components/admin/PendingApprovals";
 import { PaymentManagement } from "@/components/admin/PaymentManagement";
 import { ReportsGenerator } from "@/components/admin/ReportsGenerator";
 import { CourseManager } from "@/components/CourseManager";
+import { PlatformAnalytics } from "@/components/admin/PlatformAnalytics";
 
-type AdminView = "users" | "roles" | "courses" | "approvals" | "payments" | "reports" | "upload" | null;
+type AdminView = "users" | "roles" | "courses" | "approvals" | "payments" | "reports" | "upload" | "analytics" | null;
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -164,10 +165,14 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 flex gap-3">
           <Button onClick={() => setActiveView("upload")} size="lg" className="gap-2">
             <Upload className="w-5 h-5" />
             Upload Course Content
+          </Button>
+          <Button onClick={() => setActiveView("analytics")} size="lg" variant="outline" className="gap-2">
+            <BarChart className="w-5 h-5" />
+            View Analytics
           </Button>
         </div>
 
@@ -275,6 +280,7 @@ const AdminDashboard = () => {
               {activeView === "payments" && "Payment Management"}
               {activeView === "reports" && "Reports Generator"}
               {activeView === "upload" && "Upload Course Content"}
+              {activeView === "analytics" && "Platform Analytics"}
             </DialogTitle>
           </DialogHeader>
           {activeView === "users" && <UserManagement />}
@@ -284,6 +290,7 @@ const AdminDashboard = () => {
           {activeView === "payments" && <PaymentManagement />}
           {activeView === "reports" && <ReportsGenerator />}
           {activeView === "upload" && <CourseManager />}
+          {activeView === "analytics" && <PlatformAnalytics />}
         </DialogContent>
       </Dialog>
     </div>
