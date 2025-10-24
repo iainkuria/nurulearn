@@ -1,12 +1,29 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { GraduationCap, BookOpen, Video, FileText, Award, TrendingUp, Users, Star, CheckCircle, Zap, Shield, Globe } from "lucide-react";
+import { GraduationCap, BookOpen, Video, FileText, Award, TrendingUp, Users, Star, CheckCircle, Zap, Shield, Globe, ArrowRight, Mail, Play } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+
+  const handleNewsletterSignup = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email) {
+      toast({
+        title: "Successfully subscribed!",
+        description: "You'll receive updates about new courses and features.",
+      });
+      setEmail("");
+    }
+  };
+
   const features = [
     {
       icon: Video,
@@ -95,6 +112,63 @@ const Index = () => {
     { icon: TrendingUp, value: "95%", label: "Success Rate" },
   ];
 
+  const featuredCourses = [
+    {
+      title: "Web Development Masterclass",
+      instructor: "Sarah Johnson",
+      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+      rating: 4.9,
+      students: 2500,
+      price: 4999,
+      category: "Development",
+    },
+    {
+      title: "Data Science & Machine Learning",
+      instructor: "Michael Chen",
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71",
+      rating: 4.8,
+      students: 1800,
+      price: 5999,
+      category: "Data Science",
+    },
+    {
+      title: "Digital Marketing Essentials",
+      instructor: "Amina Hassan",
+      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
+      rating: 4.9,
+      students: 3200,
+      price: 3999,
+      category: "Marketing",
+    },
+  ];
+
+  const instructors = [
+    {
+      name: "Sarah Johnson",
+      role: "Senior Software Engineer",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
+      courses: 12,
+      students: 5400,
+      bio: "10+ years in web development and software architecture",
+    },
+    {
+      name: "Michael Chen",
+      role: "Data Science Lead",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
+      courses: 8,
+      students: 3200,
+      bio: "Expert in AI, ML, and statistical analysis",
+    },
+    {
+      name: "Amina Hassan",
+      role: "Marketing Director",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
+      courses: 15,
+      students: 7800,
+      bio: "Specialized in digital strategy and brand growth",
+    },
+  ];
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -132,17 +206,18 @@ const Index = () => {
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16 animate-fade-in" style={{ animationDelay: '0.4s' }}>
               <Link to="/auth">
-                <Button size="lg" className="w-full sm:w-auto text-xl px-12 py-8 shadow-2xl hover:shadow-primary/20 hover:scale-105 transition-all duration-300 rounded-xl">
-                  Get Started Free
+                <Button size="lg" className="group w-full sm:w-auto text-xl px-12 py-8 shadow-2xl hover:shadow-primary/20 hover:scale-105 transition-all duration-300 rounded-xl">
+                  Explore Courses
+                  <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link to="/dashboard">
+              <Link to="/auth">
                 <Button 
                   size="lg" 
                   variant="outline" 
                   className="w-full sm:w-auto text-xl px-12 py-8 border-2 hover:bg-primary/10 hover:scale-105 transition-all duration-300 rounded-xl"
                 >
-                  Explore Courses
+                  Become an Instructor
                 </Button>
               </Link>
             </div>
@@ -217,6 +292,88 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Featured Courses Section */}
+      <div className="py-32 relative overflow-hidden bg-gradient-to-b from-background via-muted/10 to-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Featured Courses
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Start your learning journey with our most popular courses
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {featuredCourses.map((course, index) => (
+              <Card
+                key={index}
+                className="group overflow-hidden bg-card border border-primary/10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
+              >
+                <div className="relative overflow-hidden aspect-video">
+                  <img
+                    src={course.image}
+                    alt={course.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <Button size="lg" className="gap-2">
+                      <Play className="w-5 h-5" />
+                      Preview Course
+                    </Button>
+                  </div>
+                  <div className="absolute top-4 right-4 px-3 py-1 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded-full text-sm font-semibold">
+                    {course.category}
+                  </div>
+                </div>
+                
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                    {course.title}
+                  </h3>
+                  <p className="text-muted-foreground mb-4 flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4" />
+                    {course.instructor}
+                  </p>
+                  
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      <span className="font-semibold">{course.rating}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <Users className="w-4 h-4" />
+                      <span>{course.students.toLocaleString()} students</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between pt-4 border-t border-border">
+                    <div className="text-2xl font-bold text-primary">
+                      KES {(course.price / 100).toLocaleString()}
+                    </div>
+                    <Link to="/auth">
+                      <Button className="group/btn">
+                        View Course
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <div className="text-center mt-16">
+            <Link to="/auth">
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6">
+                View All Courses
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Testimonials Section */}
       <div className="py-32 bg-gradient-to-br from-primary/5 via-background to-accent/5">
         <div className="container mx-auto px-4">
@@ -267,6 +424,112 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Instructor Spotlight Section */}
+      <div className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
+        <div className="container relative mx-auto px-4">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Learn from Expert Instructors
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              World-class professionals sharing their knowledge and experience
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {instructors.map((instructor, index) => (
+              <Card
+                key={index}
+                className="group relative overflow-hidden p-8 bg-card border border-primary/10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <div className="relative">
+                  <div className="flex justify-center mb-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-full blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
+                      <img
+                        src={instructor.image}
+                        alt={instructor.name}
+                        className="relative w-32 h-32 rounded-full object-cover border-4 border-primary/20 group-hover:border-primary/40 transition-all duration-300"
+                      />
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold mb-2 text-center group-hover:text-primary transition-colors">
+                    {instructor.name}
+                  </h3>
+                  <p className="text-muted-foreground text-center mb-4">{instructor.role}</p>
+                  <p className="text-sm text-muted-foreground text-center mb-6 leading-relaxed">
+                    {instructor.bio}
+                  </p>
+                  
+                  <div className="flex justify-around py-4 border-t border-border">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-primary">{instructor.courses}</div>
+                      <div className="text-xs text-muted-foreground uppercase">Courses</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-primary">{(instructor.students / 1000).toFixed(1)}K</div>
+                      <div className="text-xs text-muted-foreground uppercase">Students</div>
+                    </div>
+                  </div>
+                  
+                  <Link to="/auth">
+                    <Button className="w-full mt-4 group/btn">
+                      View Profile
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Newsletter Section */}
+      <div className="py-32 relative overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjA1Ii8+PC9nPjwvc3ZnPg==')] opacity-40" />
+        
+        <div className="container relative mx-auto px-4">
+          <Card className="max-w-4xl mx-auto p-12 bg-card/80 backdrop-blur-sm border border-primary/20 shadow-2xl">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 mb-6">
+                <Mail className="w-10 h-10 text-primary" />
+              </div>
+              <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Stay Updated
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Get notified about new courses, exclusive discounts, and learning resources delivered to your inbox
+              </p>
+            </div>
+            
+            <form onSubmit={handleNewsletterSignup} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+              <Input
+                type="email"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="flex-1 h-14 text-lg px-6 border-2"
+              />
+              <Button type="submit" size="lg" className="h-14 px-8 text-lg group">
+                Subscribe
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </form>
+            
+            <div className="flex items-center justify-center gap-2 mt-6 text-sm text-muted-foreground">
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              <span>No spam, unsubscribe anytime</span>
+            </div>
+          </Card>
+        </div>
+      </div>
+
       {/* CTA Section */}
       <div className="py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10" />
@@ -292,8 +555,8 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link to="/auth">
                 <Button size="lg" className="text-xl px-12 py-8 shadow-2xl hover:shadow-primary/20 hover:scale-105 transition-all duration-300 rounded-xl group">
-                  Sign Up Now - It's Free
-                  <Award className="w-6 h-6 ml-2 group-hover:rotate-12 transition-transform" />
+                  Start Learning Today
+                  <ArrowRight className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               
