@@ -8,6 +8,7 @@ import { CourseCard } from "@/components/CourseCard";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentHistory } from "@/components/PaymentHistory";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DashboardSkeleton } from "@/components/DashboardSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const StudentDashboard = () => {
@@ -124,78 +125,82 @@ const StudentDashboard = () => {
       <Header />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Student Dashboard</h2>
-          <p className="text-muted-foreground">{user?.email}</p>
-        </div>
+        {loading ? (
+          <DashboardSkeleton />
+        ) : (
+          <>
+            <div className="mb-8 animate-fade-in">
+              <h2 className="text-3xl font-bold mb-2">Student Dashboard</h2>
+              <p className="text-muted-foreground">{user?.email}</p>
+            </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium">Enrolled Courses</CardTitle>
-                <BookOpen className="w-4 h-4 text-muted-foreground" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.enrolled}</div>
-              <p className="text-xs text-muted-foreground">Active enrollments</p>
-            </CardContent>
-          </Card>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8 animate-fade-in-up">
+              <Card className="card-hover">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium">Enrolled Courses</CardTitle>
+                    <BookOpen className="w-4 h-4 text-muted-foreground icon-hover" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.enrolled}</div>
+                  <p className="text-xs text-muted-foreground">Active enrollments</p>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium">Videos Watched</CardTitle>
-                <Video className="w-4 h-4 text-muted-foreground" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.videos}</div>
-              <p className="text-xs text-muted-foreground">Available videos</p>
-            </CardContent>
-          </Card>
+              <Card className="card-hover">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium">Videos Watched</CardTitle>
+                    <Video className="w-4 h-4 text-muted-foreground icon-hover" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.videos}</div>
+                  <p className="text-xs text-muted-foreground">Available videos</p>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium">Study Materials</CardTitle>
-                <FileText className="w-4 h-4 text-muted-foreground" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.quizzes}</div>
-              <p className="text-xs text-muted-foreground">Available quizzes</p>
-            </CardContent>
-          </Card>
+              <Card className="card-hover">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium">Study Materials</CardTitle>
+                    <FileText className="w-4 h-4 text-muted-foreground icon-hover" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.quizzes}</div>
+                  <p className="text-xs text-muted-foreground">Available quizzes</p>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium">Avg Quiz Score</CardTitle>
-                <Trophy className="w-4 h-4 text-muted-foreground" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.avgScore}%</div>
-              <p className="text-xs text-muted-foreground">Overall performance</p>
-            </CardContent>
-          </Card>
-        </div>
+              <Card className="card-hover">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium">Avg Quiz Score</CardTitle>
+                    <Trophy className="w-4 h-4 text-muted-foreground icon-hover" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats.avgScore}%</div>
+                  <p className="text-xs text-muted-foreground">Overall performance</p>
+                </CardContent>
+              </Card>
+            </div>
 
-        <Tabs defaultValue="enrolled" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="enrolled">My Courses</TabsTrigger>
-            <TabsTrigger value="available">Browse Courses</TabsTrigger>
-            <TabsTrigger value="payments">Payment History</TabsTrigger>
-          </TabsList>
+            <Tabs defaultValue="enrolled" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="enrolled" className="transition-all duration-300">My Courses</TabsTrigger>
+                <TabsTrigger value="available" className="transition-all duration-300">Browse Courses</TabsTrigger>
+                <TabsTrigger value="payments" className="transition-all duration-300">Payment History</TabsTrigger>
+              </TabsList>
 
-          <TabsContent value="enrolled">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <BookOpen className="w-5 h-5 text-primary" />
+              <TabsContent value="enrolled" className="animate-fade-in">
+                <Card className="card-hover">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <BookOpen className="w-5 h-5 text-primary icon-hover" />
                   </div>
                   <div>
                     <CardTitle>My Enrolled Courses</CardTitle>
@@ -232,8 +237,8 @@ const StudentDashboard = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="available">
-            <Card>
+              <TabsContent value="available" className="animate-fade-in">
+                <Card className="card-hover">
               <CardHeader>
                 <CardTitle>Available Courses</CardTitle>
                 <CardDescription>Browse and enroll in courses</CardDescription>
@@ -267,10 +272,12 @@ const StudentDashboard = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="payments">
-            <PaymentHistory />
-          </TabsContent>
-        </Tabs>
+              <TabsContent value="payments" className="animate-fade-in">
+                <PaymentHistory />
+              </TabsContent>
+            </Tabs>
+          </>
+        )}
       </div>
     </div>
   );

@@ -16,11 +16,11 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-300">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <GraduationCap className="h-6 w-6 text-primary" />
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+            <GraduationCap className="h-6 w-6 text-primary icon-hover" />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
             NuruLearn
@@ -32,7 +32,7 @@ export function Header() {
             <Button
               variant="ghost"
               className={cn(
-                "transition-colors",
+                "transition-all duration-300 hover:scale-105",
                 isActive("/") && "bg-primary/10 text-primary font-medium"
               )}
             >
@@ -43,7 +43,7 @@ export function Header() {
             <Button
               variant="ghost"
               className={cn(
-                "transition-colors",
+                "transition-all duration-300 hover:scale-105",
                 isActive("/dashboard") && "bg-primary/10 text-primary font-medium"
               )}
             >
@@ -55,7 +55,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 className={cn(
-                  "transition-colors",
+                  "transition-all duration-300 hover:scale-105",
                   (isActive("/admin") || isActive("/instructor") || isActive("/student")) &&
                     "bg-primary/10 text-primary font-medium"
                 )}
@@ -69,12 +69,12 @@ export function Header() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           {user ? (
-            <Button onClick={handleSignOut} variant="outline" size="sm">
+            <Button onClick={handleSignOut} variant="outline" size="sm" className="transition-all duration-300 hover:scale-105">
               Logout
             </Button>
           ) : (
             <Link to="/auth">
-              <Button size="sm">Login / Register</Button>
+              <Button size="sm" className="transition-all duration-300 hover:scale-105">Login / Register</Button>
             </Link>
           )}
         </div>

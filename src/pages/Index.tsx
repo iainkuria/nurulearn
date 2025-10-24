@@ -8,10 +8,18 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { GraduationCap, BookOpen, Video, FileText, Award, TrendingUp, Users, Star, CheckCircle, Zap, Shield, Globe, ArrowRight, Mail, Play } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useParallax } from "@/hooks/useParallax";
 
 const Index = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
+  const parallaxOffset = useParallax(0.3);
+  const statsAnimation = useScrollAnimation();
+  const featuresAnimation = useScrollAnimation();
+  const coursesAnimation = useScrollAnimation();
+  const testimonialsAnimation = useScrollAnimation();
+  const instructorsAnimation = useScrollAnimation();
 
   const handleNewsletterSignup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -174,8 +182,11 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <div className="relative overflow-hidden min-h-[90vh] flex items-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
+      <div className="relative overflow-hidden min-h-[90vh] flex items-center parallax-container">
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10 transition-transform duration-300"
+          style={{ transform: `translateY(${parallaxOffset}px)` }}
+        />
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjA1Ii8+PC9nPjwvc3ZnPg==')] opacity-40" />
         
         {/* Floating Elements */}
@@ -206,7 +217,7 @@ const Index = () => {
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16 animate-fade-in" style={{ animationDelay: '0.4s' }}>
               <Link to="/auth">
-                <Button size="lg" className="group w-full sm:w-auto text-xl px-12 py-8 shadow-2xl hover:shadow-primary/20 hover:scale-105 transition-all duration-300 rounded-xl">
+                <Button size="lg" className="group w-full sm:w-auto text-xl px-12 py-8 shadow-2xl hover:shadow-primary/20 hover:scale-105 transition-all duration-300 rounded-xl animate-pulse-soft">
                   Explore Courses
                   <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -223,14 +234,17 @@ const Index = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+            <div 
+              ref={statsAnimation.ref}
+              className={`grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 scroll-fade-in ${statsAnimation.isVisible ? 'in-view' : ''}`}
+            >
               {stats.map((stat, index) => (
                 <Card 
                   key={index}
-                  className="group p-8 bg-gradient-to-br from-card to-card/50 border border-primary/10 shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 backdrop-blur-sm"
+                  className="group p-8 bg-gradient-to-br from-card to-card/50 border border-primary/10 shadow-lg card-hover backdrop-blur-sm"
                 >
                   <div className="relative">
-                    <stat.icon className="w-10 h-10 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
+                    <stat.icon className="w-10 h-10 text-primary mx-auto mb-4 icon-hover group-hover:animate-icon-bounce" />
                     <div className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{stat.value}</div>
                     <div className="text-sm text-muted-foreground uppercase tracking-wider">{stat.label}</div>
                   </div>
@@ -254,18 +268,21 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+          <div 
+            ref={featuresAnimation.ref}
+            className={`grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20 scroll-fade-in ${featuresAnimation.isVisible ? 'in-view' : ''}`}
+          >
             {features.map((feature, index) => (
               <Card
                 key={index}
-                className="group relative overflow-hidden p-10 bg-card border border-primary/10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
+                className="group relative overflow-hidden p-10 bg-card border border-primary/10 shadow-lg card-hover"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                 
                 <div className="relative">
                   <div className="flex justify-center mb-8">
                     <div className="p-5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
-                      <feature.icon className="w-12 h-12 text-primary" />
+                      <feature.icon className="w-12 h-12 text-primary icon-hover" />
                     </div>
                   </div>
                   <h3 className="text-2xl font-semibold mb-4 text-center group-hover:text-primary transition-colors">{feature.title}</h3>
@@ -304,11 +321,14 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <div 
+            ref={coursesAnimation.ref}
+            className={`grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto scroll-fade-in ${coursesAnimation.isVisible ? 'in-view' : ''}`}
+          >
             {featuredCourses.map((course, index) => (
               <Card
                 key={index}
-                className="group overflow-hidden bg-card border border-primary/10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
+                className="group overflow-hidden bg-card border border-primary/10 shadow-lg card-hover"
               >
                 <div className="relative overflow-hidden aspect-video">
                   <img
@@ -386,12 +406,15 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="max-w-6xl mx-auto">
+          <div 
+            ref={testimonialsAnimation.ref}
+            className={`max-w-6xl mx-auto scroll-fade-in ${testimonialsAnimation.isVisible ? 'in-view' : ''}`}
+          >
             <Carousel className="w-full">
               <CarouselContent>
                 {testimonials.map((testimonial, index) => (
                   <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                    <Card className="p-8 h-full bg-card border border-primary/10 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                    <Card className="p-8 h-full bg-card border border-primary/10 shadow-lg card-hover">
                       <div className="flex flex-col h-full">
                         <div className="flex items-center mb-4">
                           {[...Array(testimonial.rating)].map((_, i) => (
@@ -437,11 +460,14 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div 
+            ref={instructorsAnimation.ref}
+            className={`grid md:grid-cols-3 gap-8 max-w-6xl mx-auto scroll-fade-in ${instructorsAnimation.isVisible ? 'in-view' : ''}`}
+          >
             {instructors.map((instructor, index) => (
               <Card
                 key={index}
-                className="group relative overflow-hidden p-8 bg-card border border-primary/10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
+                className="group relative overflow-hidden p-8 bg-card border border-primary/10 shadow-lg card-hover"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
