@@ -147,8 +147,8 @@ const AdminDashboard = () => {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Payments Processed</CardTitle>
-                <div className="p-2 rounded-lg bg-green-500/10">
-                  <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <DollarSign className="w-5 h-5 text-primary" />
                 </div>
               </div>
             </CardHeader>
@@ -165,14 +165,16 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <div className="mb-6 flex gap-3">
-          <Button onClick={() => setActiveView("upload")} size="lg" className="gap-2">
+        <div className="mb-6 flex flex-col sm:flex-row gap-3">
+          <Button onClick={() => setActiveView("upload")} size="lg" className="gap-2 w-full sm:w-auto">
             <Upload className="w-5 h-5" />
-            Upload Course Content
+            <span className="hidden sm:inline">Upload Course Content</span>
+            <span className="sm:hidden">Upload Content</span>
           </Button>
-          <Button onClick={() => setActiveView("analytics")} size="lg" variant="outline" className="gap-2">
+          <Button onClick={() => setActiveView("analytics")} size="lg" variant="outline" className="gap-2 w-full sm:w-auto">
             <BarChart className="w-5 h-5" />
-            View Analytics
+            <span className="hidden sm:inline">View Analytics</span>
+            <span className="sm:hidden">Analytics</span>
           </Button>
         </div>
 
@@ -240,8 +242,8 @@ const AdminDashboard = () => {
           <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <CardHeader>
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-green-500/10">
-                  <BarChart3 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <BarChart3 className="w-5 h-5 text-primary" />
                 </div>
                 <CardTitle className="text-lg">Payment Analytics</CardTitle>
               </div>
@@ -253,14 +255,14 @@ const AdminDashboard = () => {
                   onClick={() => setActiveView("payments")}
                   className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2"
                 >
-                  <DollarSign className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  <DollarSign className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium">View Payments</span>
                 </button>
                 <button 
                   onClick={() => setActiveView("reports")}
                   className="w-full p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors text-left flex items-center gap-2"
                 >
-                  <BarChart3 className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  <BarChart3 className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium">Generate Reports</span>
                 </button>
               </div>
@@ -270,7 +272,7 @@ const AdminDashboard = () => {
       </div>
 
       <Dialog open={activeView !== null} onOpenChange={() => setActiveView(null)}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
           <DialogHeader>
             <DialogTitle>
               {activeView === "users" && "User Management"}

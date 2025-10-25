@@ -15,25 +15,25 @@ export const Navigation = () => {
   if (!user) return null;
 
   return (
-    <nav className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50">
+    <nav className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
             <h1 
-              className="text-xl font-bold text-primary cursor-pointer flex items-center gap-2"
+              className="text-lg sm:text-xl font-bold text-primary cursor-pointer flex items-center gap-2 hover:scale-105 transition-transform"
               onClick={() => navigate("/")}
             >
-              <GraduationCap className="w-6 h-6" />
-              NuruLearn
+              <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 icon-hover" />
+              <span className="hidden xs:inline">NuruLearn</span>
             </h1>
             
-            <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2">
               {isAdmin && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate("/dashboard")}
-                  className="gap-2"
+                  className="gap-2 transition-all hover:scale-105"
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   Admin Dashboard
@@ -44,7 +44,7 @@ export const Navigation = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate("/dashboard")}
-                  className="gap-2"
+                  className="gap-2 transition-all hover:scale-105"
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   Instructor Dashboard
@@ -55,7 +55,7 @@ export const Navigation = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate("/dashboard")}
-                  className="gap-2"
+                  className="gap-2 transition-all hover:scale-105"
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   My Dashboard
@@ -64,13 +64,13 @@ export const Navigation = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground hidden sm:inline">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="text-xs sm:text-sm text-muted-foreground hidden sm:inline truncate max-w-[150px]">
               {user.email}
             </span>
-            <Button onClick={handleSignOut} variant="outline" size="sm">
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
+            <Button onClick={handleSignOut} variant="outline" size="sm" className="transition-all hover:scale-105">
+              <LogOut className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Logout</span>
             </Button>
           </div>
         </div>

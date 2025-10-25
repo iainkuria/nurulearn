@@ -34,6 +34,10 @@ export const PaymentButton = ({ contentId, contentType, amount, children }: Paym
 
       if (data.authorizationUrl) {
         window.open(data.authorizationUrl, "_blank");
+        toast({
+          title: "Payment Window Opened",
+          description: "Complete your payment in the new tab. You'll be redirected after successful payment.",
+        });
       }
     } catch (error: any) {
       toast({
@@ -47,7 +51,7 @@ export const PaymentButton = ({ contentId, contentType, amount, children }: Paym
   };
 
   return (
-    <Button onClick={handlePayment} disabled={loading}>
+    <Button onClick={handlePayment} disabled={loading} className="w-full transition-all duration-300">
       {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
       {children}
     </Button>

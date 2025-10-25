@@ -60,24 +60,24 @@ const Auth = () => {
   return (
     <>
       <Header />
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 px-4 py-12">
-        <Card className="w-full max-w-md shadow-xl border-none animate-scale-in">
-          <CardHeader className="text-center space-y-3 pb-6">
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 px-4 py-8 sm:py-12">
+        <Card className="w-full max-w-md shadow-xl border-none animate-scale-in mx-auto">
+          <CardHeader className="text-center space-y-3 pb-4 sm:pb-6 px-4 sm:px-6">
             <div className="flex justify-center mb-2">
-              <div className="p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl shadow-lg">
-                <GraduationCap className="w-12 h-12 text-primary" />
+              <div className="p-3 sm:p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl shadow-lg">
+                <GraduationCap className="w-10 h-10 sm:w-12 sm:h-12 text-primary" />
               </div>
             </div>
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Welcome Back
             </CardTitle>
-            <CardDescription className="text-base">Sign in to continue your learning journey</CardDescription>
+            <CardDescription className="text-sm sm:text-base">Sign in to continue your learning journey</CardDescription>
           </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6 pb-6">
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="login" className="text-sm sm:text-base">Login</TabsTrigger>
+              <TabsTrigger value="signup" className="text-sm sm:text-base">Sign Up</TabsTrigger>
             </TabsList>
             
             <TabsContent value="login">

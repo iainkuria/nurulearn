@@ -15,37 +15,38 @@ export const CourseCard = ({ course, onEnroll, enrolled, showPrice = true }: Cou
   const isPaid = course.price && course.price > 0;
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 card-hover group">
       {course.thumbnail_url && (
-        <div className="relative">
+        <div className="relative overflow-hidden">
           <img
             src={course.thumbnail_url}
             alt={course.title}
-            className="w-full h-48 object-cover"
+            className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+            loading="lazy"
           />
           {enrolled && (
-            <Badge className="absolute top-2 right-2 bg-green-500">
+            <Badge className="absolute top-2 right-2 bg-primary shadow-lg">
               <CheckCircle className="w-3 h-3 mr-1" />
               Enrolled
             </Badge>
           )}
         </div>
       )}
-      <CardHeader>
-        <CardTitle className="text-lg">{course.title}</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">{course.title}</CardTitle>
         {showPrice && isPaid && (
-          <div className="flex items-center gap-1 text-primary font-semibold">
+          <div className="flex items-center gap-1 text-primary font-semibold text-sm">
             <DollarSign className="w-4 h-4" />
             <span>KES {Number(course.price).toLocaleString()}</span>
           </div>
         )}
       </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
+      <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground line-clamp-3">
           {course.description}
         </p>
         {enrolled ? (
-          <Button className="w-full" variant="outline">
+          <Button className="w-full transition-all duration-300 hover:scale-105" variant="outline">
             <BookOpen className="w-4 h-4 mr-2" />
             Continue Learning
           </Button>
@@ -56,11 +57,12 @@ export const CourseCard = ({ course, onEnroll, enrolled, showPrice = true }: Cou
             amount={Number(course.price)}
           >
             <DollarSign className="w-4 h-4 mr-2" />
-            Enroll Now - KES {Number(course.price).toLocaleString()}
+            <span className="hidden sm:inline">Enroll Now - KES {Number(course.price).toLocaleString()}</span>
+            <span className="sm:hidden">Enroll - KES {Number(course.price).toLocaleString()}</span>
           </PaymentButton>
         ) : (
           <Button
-            className="w-full"
+            className="w-full transition-all duration-300 hover:scale-105"
             onClick={() => onEnroll?.(course.id)}
           >
             Enroll Free

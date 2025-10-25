@@ -16,13 +16,13 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-300">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-300 shadow-sm">
+      <div className="container mx-auto flex h-14 sm:h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
-            <GraduationCap className="h-6 w-6 text-primary icon-hover" />
+          <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+            <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-primary icon-hover" />
           </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
+          <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
             NuruLearn
           </span>
         </Link>
@@ -66,15 +66,19 @@ export function Header() {
           )}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
           {user ? (
-            <Button onClick={handleSignOut} variant="outline" size="sm" className="transition-all duration-300 hover:scale-105">
-              Logout
+            <Button onClick={handleSignOut} variant="outline" size="sm" className="transition-all duration-300 hover:scale-105 text-xs sm:text-sm">
+              <span className="hidden sm:inline">Logout</span>
+              <span className="sm:hidden">Exit</span>
             </Button>
           ) : (
             <Link to="/auth">
-              <Button size="sm" className="transition-all duration-300 hover:scale-105">Login / Register</Button>
+              <Button size="sm" className="transition-all duration-300 hover:scale-105 text-xs sm:text-sm">
+                <span className="hidden sm:inline">Login / Register</span>
+                <span className="sm:hidden">Login</span>
+              </Button>
             </Link>
           )}
         </div>
