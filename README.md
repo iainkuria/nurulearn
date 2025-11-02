@@ -7,92 +7,88 @@
 
 ---
 
-🚀 **Quick Links**
+## 🚀 Quick Links
 
-- 🌐 [Live Demo](#)  
+- 🌐 [Live Demo](#)
 - 📊 [Pitch Deck](https://gamma.app/docs/NuruLearn-Lighting-the-Path-to-Smarter-Learning-kcem6j7h7dxdu67?mode=doc)
 
 ---
 
-## ✨ About the Project
+## ✨ About NuruLearn
 
-NuruLearn is a modern web-based e-learning platform designed to make education more accessible, personalized, and engaging — especially across Africa and other emerging regions.
+**NuruLearn** is a modern web-based e-learning platform designed to make education more accessible, personalized, and engaging — especially across Africa and other emerging regions.
 
-It empowers students, instructors, and institutions through a simple, secure, and beautifully designed learning experience that prioritizes clarity, authenticity, and progress tracking.
+It empowers **students**, **instructors**, and **institutions** through a simple, secure, and beautifully designed learning experience that prioritizes clarity, authenticity, and progress tracking.
 
-“Nuru” means Light — and our mission is to light the path to smarter learning for everyone.
+> “Nuru” means *Light* — and our mission is to **light the path to smarter learning for everyone.**
 
 ---
 
 ## 🎯 Key Features
 
-🧭 Modern Role-Based Dashboards — Separate panels for Students, Instructors, and Admins
-
-🌗 Dark/Light Mode — Comfortable viewing for all environments
-
-🎥 YouTube Integration — Embed real learning content using video links
-
-📄 PDF Notes Uploads — Secure, downloadable resource storage
-
-💳 Paystack Payments — Safe and transparent course enrollment system
-
-📊 Progress Tracking — Visual learning insights and completion badges
-
-👩‍🏫 Instructor Tools — Course creation, quiz builder, and student analytics
-
-🔒 Admin Oversight — Platform management, payments, and reporting
-
-🪄 Smooth Animations — Modern, mobile-friendly user experience
+- 🧭 **Modern Role-Based Dashboards** — Separate panels for Students, Instructors, and Admins  
+- 🌗 **Dark/Light Mode** — Comfortable viewing for all environments  
+- 🎥 **YouTube Integration** — Embed real learning content using video links  
+- 📄 **PDF Notes Uploads** — Secure, downloadable resource storage  
+- 💳 **Paystack Payments** — Safe and transparent course enrollment system  
+- 📊 **Progress Tracking** — Visual learning insights and completion badges  
+- 👩‍🏫 **Instructor Tools** — Course creation, quiz builder, and student analytics  
+- 🔒 **Admin Oversight** — Platform management, payments, and reporting  
+- 🪄 **Smooth Animations** — Modern, mobile-friendly user experience  
 
 ---
 
 ## 💡 Vision
 
-To become Africa’s most trusted and authentic e-learning platform —
-one that connects learning, technology, and opportunity in one place.
+> To become Africa’s most trusted and authentic e-learning platform —  
+> one that connects learning, technology, and opportunity in one place.
+
 ---
 
-##🧩 Platform Overview
-| Role                  | Capabilities                                              |
-| --------------------- | --------------------------------------------------------- |
-| 👩‍🎓 **Students**    | Browse, enroll, watch, download notes, and track progress |
-| 👨‍🏫 **Instructors** | Upload YouTube lessons, share notes, create quizzes       |
-| 🧑‍💼 **Admins**      | Manage users, approve courses, monitor analytics          |
-| 💳 **Payments**       | Paystack integration for secure course access             |
-| 📈 **Analytics**      | Visual data insights for all roles                        |
+## 🧩 Platform Overview
+
+| Role | Capabilities |
+|------|---------------|
+| 👩‍🎓 **Students** | Browse, enroll, watch, download notes, and track progress |
+| 👨‍🏫 **Instructors** | Upload YouTube lessons, share notes, create quizzes |
+| 🧑‍💼 **Admins** | Manage users, approve courses, monitor analytics |
+| 💳 **Payments** | Paystack integration for secure course access |
+| 📈 **Analytics** | Visual data insights for all roles |
 
 ---
 
 ## 🧠 Tech Stack
 
-| Technology                      | Purpose                             |
-| ------------------------------- | ----------------------------------- |
-| ⚛️ **React + TypeScript**       | Component-based, scalable frontend  |
+| Technology | Purpose |
+|-------------|----------|
+| ⚛️ **React + TypeScript** | Component-based, scalable frontend |
 | 🎨 **Tailwind CSS + shadcn/ui** | Beautiful, responsive design system |
-| ⚡ **Vite**                      | Lightning-fast build environment    |
-| 🗄️ **PostgreSQL (Supabase)**   | Secure relational database          |
-| ☁️ **Cloud Storage**            | Store videos, PDFs, and media files |
-| 💳 **Paystack API**             | Payment and verification services   |
+| ⚡ **Vite** | Lightning-fast build environment |
+| 🗄️ **PostgreSQL (Supabase)** | Secure relational database |
+| ☁️ **Cloud Storage** | Store videos, PDFs, and media files |
+| 💳 **Paystack API** | Payment and verification services |
 
 ---
 
-🛠️ Getting Started (Developers)
-1️⃣ Clone the Repository
+## 🛠️ Getting Started (Developers)
+
+### 1️⃣ Clone the Repository
+
+```bash
 git clone <YOUR_GIT_URL>
 cd nurulearn
-
 2️⃣ Install Dependencies
+bash
+Copy code
 npm install
-
 3️⃣ Run the Development Server
+bash
+Copy code
 npm run dev
-
-
 Open in your browser at 👉 http://localhost:5173
 
 🎥 Uploading Courses and Resources
 ➤ To Add a YouTube Course:
-
 Log in as an Instructor or Admin
 
 Navigate to Course Management
@@ -108,7 +104,6 @@ Click Publish
 🎬 The course will automatically embed the YouTube video and appear in the course catalog.
 
 ➤ To Upload PDF Notes:
-
 Go to Instructor Dashboard
 
 Select an existing course
@@ -120,8 +115,7 @@ Upload your .pdf file and add a short description
 Save — the notes will be downloadable by enrolled students only
 
 ⚡ Supported File Types
-
-Video: YouTube links
+Videos: YouTube links
 
 Documents: .pdf
 
@@ -135,8 +129,8 @@ Phase	Goals
 🔜 Mobile Optimization	Responsive and PWA-ready
 🔜 Certificates & Badges	Reward-based learning system
 🔜 Institutional Onboarding	Multi-instructor learning hubs
-🌍 Authenticity & Trust
 
+🌍 Authenticity & Trust
 Unlike many e-learning platforms filled with generic or fake data, NuruLearn focuses on:
 
 Real, verified course material
@@ -150,10 +144,11 @@ Transparent payment and enrollment
 Our goal is not to look flashy — it’s to build trust, one learner at a time.
 
 🤝 Contributing
-
 We welcome contributions!
 To contribute:
 
+bash
+Copy code
 # Fork the repository
 # Create a feature branch
 git checkout -b feature-name
@@ -161,79 +156,22 @@ git checkout -b feature-name
 # Commit and push your changes
 git commit -m "Add new feature"
 git push origin feature-name
-
-
 Then open a Pull Request.
 
 🧑‍💻 Creator
-
 👤 Ian Kariuki
-🌐 [LinkedIn](https://www.linkedin.com/in/ian-kariuki-587b33362) • [GitHub](https://github.com/iainkuria)
+🌐 🌐 [LinkedIn](https://www.linkedin.com/in/ian-kariuki-587b33362) • [GitHub](https://github.com/iainkuria)
 
 🪞 Project Philosophy
-
 NuruLearn is built on the belief that education should be inclusive, credible, and beautiful.
 Technology should empower — not exclude.
 
 This project is a genuine effort to build Africa’s next generation of digital learners.
 
 📜 License
-
 This project is licensed under the MIT License — feel free to use, modify, and build upon it.
 
 ⭐ Acknowledgments
-
 Special thanks to the open-source community and to everyone contributing to a smarter, more connected world of learning.
-
-“Education is the light of progress — and NuruLearn is how we carry that light forward.” ✨
-
-
-
-## 🧰 Getting Started (For Developers)
-
-To run NuruLearn locally:
-
-### 1️⃣ Clone the repository
-```bash
-git clone <YOUR_GIT_URL>
-cd nurulearn
-2️⃣ Install dependencies
-bash
-Copy code
-npm install
-3️⃣ Run the development server
-bash
-Copy code
-npm run dev
-Then open your browser and navigate to:
-👉 http://localhost:5173
-
-🤝 Contributing
-Contributions are always welcome!
-To contribute:
-
-Fork this repository
-
-Create a new feature branch (git checkout -b feature-name)
-
-Commit your changes (git commit -m "Add new feature")
-
-Push to your fork and open a pull request
-
-🧑‍💻 Creator
-👤 Ian Kariuki
-## 🧑‍💻 Creator
-🌐 [LinkedIn](https://www.linkedin.com/in/ian-kariuki-587b33362) • [GitHub](https://github.com/iainkuria)
-
-🪞 Project Philosophy
-NuruLearn was born from a belief that technology should empower, not exclude.
-It’s a genuine effort to bring structured, credible, and beautiful learning experiences to communities that have been left behind by traditional education systems.
-
-📜 License
-This project is licensed under the MIT License — feel free to use, modify, and build upon it.
-
-⭐ Acknowledgments
-Special thanks to the open-source community and modern web frameworks that make projects like NuruLearn possible.
-We believe in learning through doing, collaborating, and sharing knowledge freely.
 
 “Education is the light of progress — and NuruLearn is how we carry that light forward.” ✨
