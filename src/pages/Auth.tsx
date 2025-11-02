@@ -49,9 +49,11 @@ const Auth = () => {
     const { error } = await signUp(email, password, name);
     
     if (!error) {
-      // Auto sign in after signup
-      await signIn(email, password);
-      navigate("/dashboard");
+      // Try to auto sign in after signup (will work if email confirmation is disabled)
+      const signInResult = await signIn(email, password);
+      if (!signInResult.error) {
+        navigate("/dashboard");
+      }
     }
     
     setLoading(false);
