@@ -117,13 +117,13 @@ const Index = () => {
             
             <h1 className="text-4xl sm:text-6xl lg:text-8xl font-bold mb-6 sm:mb-8 animate-fade-in leading-tight">
               <span className="bg-gradient-to-r from-primary via-primary-light to-accent bg-clip-text text-transparent">
-                Welcome to NuruLearn
+                Empowering Learners through Knowledge, Skill, and Digital Access
               </span>
             </h1>
             
-            <p className="text-lg sm:text-2xl lg:text-3xl text-muted-foreground mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in font-light" style={{ animationDelay: '0.2s' }}>
-              Your journey to world-class education begins here. Connect with expert instructors, 
-              access premium content, and join a community of passionate learners.
+            <p className="text-lg sm:text-2xl lg:text-3xl text-muted-foreground mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in font-light" style={{ animationDelay: '0.2s' }}>
+              NuruLearn bridges the gap between education and opportunity by offering accessible, 
+              high-quality learning experiences across technology, forensics, and digital innovation.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 animate-fade-in" style={{ animationDelay: '0.4s' }}>
@@ -137,9 +137,9 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="w-full text-lg sm:text-xl px-8 sm:px-12 py-6 sm:py-8 border-2 hover:bg-primary/10 hover:scale-105 transition-all duration-300 rounded-xl"
+                  className="w-full text-lg sm:text-xl px-8 sm:px-12 py-6 sm:py-8 border-2 hover:bg-accent/20 hover:scale-105 transition-all duration-300 rounded-xl"
                 >
-                  Become an Instructor
+                  Join as Instructor
                 </Button>
               </Link>
             </div>
@@ -236,30 +236,46 @@ const Index = () => {
             ref={coursesAnimation.ref}
             className={`grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto scroll-fade-in ${coursesAnimation.isVisible ? 'in-view' : ''}`}
           >
-            {[1, 2, 3].map((index) => (
+            {[
+              { title: "Digital Forensics Fundamentals", icon: Shield },
+              { title: "Introduction to Cybersecurity", icon: Globe },
+              { title: "Ethical Hacking for Beginners", icon: Zap }
+            ].map((course, index) => (
               <Card
                 key={index}
                 className="group overflow-hidden bg-card border border-primary/10 shadow-lg card-hover"
               >
-                <div className="relative overflow-hidden aspect-video bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 flex items-center justify-center">
+                <div className="relative overflow-hidden aspect-video bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 flex items-center justify-center">
                   <div className="text-center p-6">
-                    <BookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-primary/30 mx-auto mb-3 animate-pulse" />
-                    <p className="text-sm sm:text-base text-muted-foreground font-medium">Course Coming Soon</p>
+                    <course.icon className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-3 animate-pulse" />
+                    <div className="inline-block px-4 py-1.5 bg-accent/20 text-accent-foreground text-xs font-semibold rounded-full">
+                      Coming Soon
+                    </div>
                   </div>
                 </div>
                 
                 <div className="p-4 sm:p-6">
-                  <div className="h-6 bg-muted/50 rounded mb-3 animate-pulse" />
-                  <div className="h-4 bg-muted/30 rounded mb-4 w-3/4 animate-pulse" />
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 text-foreground">{course.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Expert-led course designed for beginners and intermediate learners
+                  </p>
                   
-                  <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-                    <div className="h-4 bg-muted/30 rounded w-16 animate-pulse" />
-                    <div className="h-4 bg-muted/30 rounded w-20 animate-pulse" />
+                  <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Video className="w-3.5 h-3.5" />
+                      HD Video
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Award className="w-3.5 h-3.5" />
+                      Certificate
+                    </span>
                   </div>
                   
                   <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-border">
-                    <div className="h-6 bg-muted/30 rounded w-24 animate-pulse" />
-                    <div className="h-10 bg-muted/30 rounded w-28 animate-pulse" />
+                    <span className="text-sm text-muted-foreground">Launching Soon</span>
+                    <Button size="sm" variant="outline" disabled className="opacity-50">
+                      Notify Me
+                    </Button>
                   </div>
                 </div>
               </Card>
@@ -353,6 +369,68 @@ const Index = () => {
                     Become an Instructor
                   </Button>
                 </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Latest Updates Section */}
+      <div className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/10 to-background" />
+        <div className="container relative mx-auto px-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Latest Updates
+            </h2>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Stay informed about upcoming courses and platform features
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <Card className="group border border-primary/10 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <BookOpen className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-xs font-semibold text-primary">Platform Launch</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">New Courses Launching Soon!</h3>
+                <p className="text-sm text-muted-foreground">
+                  We're preparing premium courses in forensics, cybersecurity, and ethical hacking.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="group border border-primary/10 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-accent/10 rounded-lg">
+                    <Users className="w-5 h-5 text-accent-foreground" />
+                  </div>
+                  <span className="text-xs font-semibold text-accent-foreground">Instructors</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">Expert Instructors Onboarding</h3>
+                <p className="text-sm text-muted-foreground">
+                  Industry professionals are joining to deliver world-class learning experiences.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="group border border-primary/10 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Zap className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-xs font-semibold text-primary">Features</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">Platform Features Coming</h3>
+                <p className="text-sm text-muted-foreground">
+                  Interactive quizzes, progress tracking, and certification system being finalized.
+                </p>
               </CardContent>
             </Card>
           </div>
