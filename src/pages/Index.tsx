@@ -4,21 +4,47 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { CourseCard } from "@/components/CourseCard";
 import { GraduationCap, BookOpen, Video, FileText, Award, TrendingUp, Users, Star, CheckCircle, Zap, Shield, Globe, ArrowRight, Mail } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useParallax } from "@/hooks/useParallax";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const parallaxOffset = useParallax(0.3);
   const statsAnimation = useScrollAnimation();
   const featuresAnimation = useScrollAnimation();
   const coursesAnimation = useScrollAnimation();
   const testimonialsAnimation = useScrollAnimation();
   const instructorsAnimation = useScrollAnimation();
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('courses')
+          .select('*')
+          .eq('is_published', true)
+          .order('created_at', { ascending: false })
+          .limit(6);
+        
+        if (error) throw error;
+        setCourses(data || []);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   const handleNewsletterSignup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,71 +254,52 @@ const Index = () => {
               Featured Courses
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Premium courses from verified instructors — coming soon
+              High-quality learning resources from trusted sources
             </p>
           </div>
 
-          <div 
-            ref={coursesAnimation.ref}
-            className={`grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto scroll-fade-in ${coursesAnimation.isVisible ? 'in-view' : ''}`}
-          >
-            {[
-              { title: "Digital Forensics Fundamentals", icon: Shield },
-              { title: "Introduction to Cybersecurity", icon: Globe },
-              { title: "Ethical Hacking for Beginners", icon: Zap }
-            ].map((course, index) => (
-              <Card
-                key={index}
-                className="group overflow-hidden bg-card border border-primary/10 shadow-lg card-hover"
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          ) : courses.length > 0 ? (
+            <>
+              <div 
+                ref={coursesAnimation.ref}
+                className={`grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto scroll-fade-in ${coursesAnimation.isVisible ? 'in-view' : ''}`}
               >
-                <div className="relative overflow-hidden aspect-video bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 flex items-center justify-center">
-                  <div className="text-center p-6">
-                    <course.icon className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-3 animate-pulse" />
-                    <div className="inline-block px-4 py-1.5 bg-accent/20 text-accent-foreground text-xs font-semibold rounded-full">
-                      Coming Soon
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-4 sm:p-6">
-                  <h3 className="text-lg sm:text-xl font-semibold mb-3 text-foreground">{course.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Expert-led course designed for beginners and intermediate learners
-                  </p>
-                  
-                  <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Video className="w-3.5 h-3.5" />
-                      HD Video
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Award className="w-3.5 h-3.5" />
-                      Certificate
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-border">
-                    <span className="text-sm text-muted-foreground">Launching Soon</span>
-                    <Button size="sm" variant="outline" disabled className="opacity-50">
-                      Notify Me
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+                {courses.map((course) => (
+                  <CourseCard
+                    key={course.id}
+                    course={course}
+                    enrolled={false}
+                    showPrice={false}
+                  />
+                ))}
+              </div>
 
-          <div className="text-center mt-12 sm:mt-16">
-            <p className="text-muted-foreground mb-6">
-              Our instructors are preparing high-quality courses for you
-            </p>
-            <Link to="/auth">
-              <Button size="lg" variant="outline" className="gap-2">
-                <GraduationCap className="w-5 h-5" />
-                Get Notified When Courses Launch
-              </Button>
-            </Link>
-          </div>
+              <div className="text-center mt-12 sm:mt-16">
+                <Link to="/auth">
+                  <Button size="lg" className="gap-2">
+                    <GraduationCap className="w-5 h-5" />
+                    Sign Up to Access All Courses
+                  </Button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-muted-foreground mb-6">
+                Our instructors are preparing high-quality courses for you
+              </p>
+              <Link to="/auth">
+                <Button size="lg" variant="outline" className="gap-2">
+                  <GraduationCap className="w-5 h-5" />
+                  Get Notified When Courses Launch
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
