@@ -11,12 +11,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useParallax } from "@/hooks/useParallax";
 import { supabase } from "@/integrations/supabase/client";
+import { CourseViewer } from "@/components/CourseViewer";
 
 const Index = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [viewerOpen, setViewerOpen] = useState(false);
   const parallaxOffset = useParallax(0.3);
   const statsAnimation = useScrollAnimation();
   const featuresAnimation = useScrollAnimation();
@@ -45,6 +48,11 @@ const Index = () => {
 
     fetchCourses();
   }, []);
+
+  const handleViewCourse = (course: any) => {
+    setSelectedCourse(course);
+    setViewerOpen(true);
+  };
 
   const handleNewsletterSignup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -272,8 +280,9 @@ const Index = () => {
                   <CourseCard
                     key={course.id}
                     course={course}
-                    enrolled={false}
+                    enrolled={true}
                     showPrice={false}
+                    onViewCourse={handleViewCourse}
                   />
                 ))}
               </div>
@@ -518,6 +527,12 @@ const Index = () => {
       </div>
 
       <Footer />
+
+      <CourseViewer 
+        course={selectedCourse} 
+        open={viewerOpen} 
+        onOpenChange={setViewerOpen} 
+      />
     </div>
   );
 };

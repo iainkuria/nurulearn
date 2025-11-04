@@ -11,13 +11,30 @@ interface CourseCardProps {
   showPrice?: boolean;
 }
 
-export const CourseCard = ({ course, onEnroll, enrolled, showPrice = true }: CourseCardProps) => {
+interface CourseCardProps {
+  course: any;
+  onEnroll?: (courseId: string) => void;
+  enrolled?: boolean;
+  showPrice?: boolean;
+  onViewCourse?: (course: any) => void;
+}
+
+export const CourseCard = ({ course, onEnroll, enrolled, showPrice = true, onViewCourse }: CourseCardProps) => {
   const isPaid = course.price && course.price > 0;
+
+  const handleCardClick = () => {
+    if (enrolled && onViewCourse) {
+      onViewCourse(course);
+    }
+  };
 
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 card-hover group">
       {course.thumbnail_url && (
-        <div className="relative overflow-hidden">
+        <div 
+          className="relative overflow-hidden cursor-pointer" 
+          onClick={handleCardClick}
+        >
           <img
             src={course.thumbnail_url}
             alt={course.title}
@@ -33,7 +50,12 @@ export const CourseCard = ({ course, onEnroll, enrolled, showPrice = true }: Cou
         </div>
       )}
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">{course.title}</CardTitle>
+        <CardTitle 
+          className="text-lg line-clamp-2 group-hover:text-primary transition-colors cursor-pointer" 
+          onClick={handleCardClick}
+        >
+          {course.title}
+        </CardTitle>
         {showPrice && isPaid && (
           <div className="flex items-center gap-1 text-primary font-semibold text-sm">
             <DollarSign className="w-4 h-4" />
@@ -46,7 +68,11 @@ export const CourseCard = ({ course, onEnroll, enrolled, showPrice = true }: Cou
           {course.description}
         </p>
         {enrolled ? (
-          <Button className="w-full transition-all duration-300 hover:scale-105" variant="outline">
+          <Button 
+            className="w-full transition-all duration-300 hover:scale-105" 
+            variant="outline"
+            onClick={handleCardClick}
+          >
             <BookOpen className="w-4 h-4 mr-2" />
             Continue Learning
           </Button>

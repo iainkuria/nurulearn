@@ -5,6 +5,7 @@ import { BookOpen, Video, FileText, Trophy, Award } from "lucide-react";
 import { Header } from "@/components/Header";
 import { supabase } from "@/integrations/supabase/client";
 import { CourseCard } from "@/components/CourseCard";
+import { CourseViewer } from "@/components/CourseViewer";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentHistory } from "@/components/PaymentHistory";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,6 +20,8 @@ const StudentDashboard = () => {
   const [enrolledCourses, setEnrolledCourses] = useState<Set<string>>(new Set());
   const [myCourses, setMyCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [viewerOpen, setViewerOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -118,6 +121,11 @@ const StudentDashboard = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleViewCourse = (course: any) => {
+    setSelectedCourse(course);
+    setViewerOpen(true);
   };
 
   return (
@@ -223,6 +231,7 @@ const StudentDashboard = () => {
                         course={course}
                         enrolled={true}
                         showPrice={false}
+                        onViewCourse={handleViewCourse}
                       />
                     ))}
                   </div>
@@ -258,6 +267,7 @@ const StudentDashboard = () => {
                         course={course}
                         enrolled={enrolledCourses.has(course.id)}
                         onEnroll={handleEnroll}
+                        onViewCourse={enrolledCourses.has(course.id) ? handleViewCourse : undefined}
                       />
                     ))}
                   </div>
@@ -279,6 +289,12 @@ const StudentDashboard = () => {
           </>
         )}
       </div>
+
+      <CourseViewer 
+        course={selectedCourse} 
+        open={viewerOpen} 
+        onOpenChange={setViewerOpen} 
+      />
     </div>
   );
 };
