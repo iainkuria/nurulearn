@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VideoPlayer } from "@/components/VideoPlayer";
-import { Loader2, FileText, ExternalLink } from "lucide-react";
+import { Loader2, FileText, ExternalLink, Download, Trophy, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { ProgressTracker } from "@/components/ProgressTracker";
+import { Badge } from "@/components/ui/badge";
 
 interface CourseViewerProps {
   course: any;
@@ -18,6 +20,8 @@ export const CourseViewer = ({ course, open, onOpenChange }: CourseViewerProps) 
   const [notes, setNotes] = useState<any[]>([]);
   const [activeVideo, setActiveVideo] = useState<any>(null);
   const [activePdf, setActivePdf] = useState<any>(null);
+  const [completedVideoIds, setCompletedVideoIds] = useState<string[]>([]);
+  const [courseCompleted, setCourseCompleted] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -29,13 +33,24 @@ export const CourseViewer = ({ course, open, onOpenChange }: CourseViewerProps) 
   const loadCourseContent = async () => {
     setLoading(true);
     try {
-      const [videosRes, notesRes] = await Promise.all([
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const [videosRes, notesRes, progressRes] = await Promise.all([
         supabase.from("videos").select("*").eq("course_id", course.id),
-        supabase.from("notes").select("*").eq("course_id", course.id)
+        supabase.from("notes").select("*").eq("course_id", course.id),
+        user ? supabase.from("progress").select("*").eq("course_id", course.id).eq("user_id", user.id).eq("completed", true) : null
       ]);
 
       if (videosRes.data) setVideos(videosRes.data);
       if (notesRes.data) setNotes(notesRes.data);
+      
+      const completedIds = progressRes?.data?.map(p => p.video_id).filter(Boolean) || [];
+      setCompletedVideoIds(completedIds);
+      
+      // Check if course is fully completed
+      if (videosRes.data && videosRes.data.length > 0) {
+        setCourseCompleted(completedIds.length === videosRes.data.length);
+      }
 
       // Auto-select first video or PDF
       if (videosRes.data && videosRes.data.length > 0) {
@@ -74,6 +89,22 @@ export const CourseViewer = ({ course, open, onOpenChange }: CourseViewerProps) 
   const openPdfInNewTab = (url: string) => {
     window.open(url, "_blank");
     trackProgress();
+    toast({
+      title: "Document Opened",
+      description: "Your document has opened in a new tab.",
+    });
+  };
+
+  const handleDownloadPdf = (url: string, title: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = title;
+    link.click();
+    trackProgress();
+    toast({
+      title: "Download Started",
+      description: "Your resource is being downloaded.",
+    });
   };
 
   useEffect(() => {
@@ -84,9 +115,22 @@ export const CourseViewer = ({ course, open, onOpenChange }: CourseViewerProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">{course?.title}</DialogTitle>
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl animate-in fade-in-0 zoom-in-95 duration-300">
+        <DialogHeader className="space-y-3">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <DialogTitle className="text-2xl md:text-3xl font-bold">{course?.title}</DialogTitle>
+              {course?.description && (
+                <DialogDescription className="text-base mt-2">{course.description}</DialogDescription>
+              )}
+            </div>
+            {courseCompleted && (
+              <Badge className="bg-green-500 hover:bg-green-600 text-white gap-1 px-3 py-1">
+                <Trophy className="w-4 h-4" />
+                Completed
+              </Badge>
+            )}
+          </div>
         </DialogHeader>
 
         {loading ? (
@@ -97,71 +141,109 @@ export const CourseViewer = ({ course, open, onOpenChange }: CourseViewerProps) 
           <div className="space-y-6">
             {/* Video Section */}
             {activeVideo && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">{activeVideo.title}</h3>
-                <VideoPlayer videoUrl={activeVideo.video_url} title={activeVideo.title} />
+              <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg md:text-xl font-semibold">{activeVideo.title}</h3>
+                  {completedVideoIds.includes(activeVideo.id) && (
+                    <Badge variant="outline" className="gap-1">
+                      <CheckCircle className="w-3 h-3 text-green-500" />
+                      Watched
+                    </Badge>
+                  )}
+                </div>
+                <div className="rounded-xl overflow-hidden shadow-lg">
+                  <VideoPlayer videoUrl={activeVideo.video_url} title={activeVideo.title} />
+                </div>
                 {activeVideo.description && (
-                  <p className="text-sm text-muted-foreground">{activeVideo.description}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{activeVideo.description}</p>
                 )}
               </div>
             )}
 
             {/* PDF Section */}
             {activePdf && !activeVideo && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <FileText className="w-5 h-5" />
-                    {activePdf.title}
+              <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center justify-between gap-3 p-4 rounded-lg bg-muted/50 border">
+                  <h3 className="text-lg md:text-xl font-semibold flex items-center gap-2 flex-1 min-w-0">
+                    <FileText className="w-5 h-5 flex-shrink-0 text-primary" />
+                    <span className="truncate">{activePdf.title}</span>
                   </h3>
-                  <Button onClick={() => openPdfInNewTab(activePdf.file_url)} variant="outline">
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Open in New Tab
-                  </Button>
+                  <div className="flex gap-2 flex-shrink-0">
+                    <Button onClick={() => handleDownloadPdf(activePdf.file_url, activePdf.title)} variant="outline" size="sm">
+                      <Download className="w-4 h-4 mr-2" />
+                      <span className="hidden sm:inline">Download</span>
+                    </Button>
+                    <Button onClick={() => openPdfInNewTab(activePdf.file_url)} variant="outline" size="sm">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      <span className="hidden sm:inline">New Tab</span>
+                    </Button>
+                  </div>
                 </div>
                 {activePdf.description && (
-                  <p className="text-sm text-muted-foreground mb-4">{activePdf.description}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed px-1">{activePdf.description}</p>
                 )}
-                <div className="border rounded-lg overflow-hidden bg-muted/20">
-                  <iframe
-                    src={activePdf.file_url}
-                    className="w-full h-[600px]"
-                    title={activePdf.title}
-                  />
+                <div className="border rounded-xl overflow-hidden bg-muted/20 shadow-lg">
+                  {loading ? (
+                    <div className="flex items-center justify-center h-[600px]">
+                      <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    </div>
+                  ) : (
+                    <iframe
+                      src={activePdf.file_url}
+                      className="w-full h-[600px]"
+                      title={activePdf.title}
+                    />
+                  )}
                 </div>
+              </div>
+            )}
+
+            {/* Progress Tracker */}
+            {videos.length > 0 && (
+              <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-100">
+                <ProgressTracker 
+                  courseId={course.id}
+                  videos={videos}
+                  completedVideoIds={completedVideoIds}
+                  onProgressUpdate={loadCourseContent}
+                />
               </div>
             )}
 
             {/* Course Materials List */}
             {(videos.length > 1 || notes.length > 0) && (
-              <div className="border-t pt-6 space-y-4">
-                <h4 className="font-semibold">Course Materials</h4>
+              <div className="border-t pt-6 space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-500 delay-150">
+                <h4 className="font-semibold text-lg">Course Materials</h4>
                 <div className="grid gap-2">
-                  {videos.map((video) => (
-                    <Button
-                      key={video.id}
-                      variant={activeVideo?.id === video.id ? "default" : "outline"}
-                      className="justify-start"
-                      onClick={() => {
-                        setActiveVideo(video);
-                        setActivePdf(null);
-                      }}
-                    >
-                      {video.title}
-                    </Button>
-                  ))}
+                  {videos.map((video) => {
+                    const isCompleted = completedVideoIds.includes(video.id);
+                    return (
+                      <Button
+                        key={video.id}
+                        variant={activeVideo?.id === video.id ? "default" : "outline"}
+                        className="justify-start gap-2 h-auto py-3 transition-all duration-200 hover:scale-[1.02]"
+                        onClick={() => {
+                          setActiveVideo(video);
+                          setActivePdf(null);
+                        }}
+                      >
+                        {isCompleted && <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />}
+                        <span className="text-left flex-1">{video.title}</span>
+                      </Button>
+                    );
+                  })}
                   {notes.map((note) => (
                     <Button
                       key={note.id}
                       variant={activePdf?.id === note.id ? "default" : "outline"}
-                      className="justify-start"
+                      className="justify-start gap-2 h-auto py-3 transition-all duration-200 hover:scale-[1.02]"
                       onClick={() => {
                         setActivePdf(note);
                         setActiveVideo(null);
                       }}
                     >
-                      <FileText className="w-4 h-4 mr-2" />
-                      {note.title}
+                      <FileText className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-left flex-1">{note.title}</span>
                     </Button>
                   ))}
                 </div>

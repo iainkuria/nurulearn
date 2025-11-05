@@ -33,8 +33,19 @@ export const InstructorAnalytics = () => {
         .in("content_id", courseIds.length ? courseIds : [''])
         .eq("content_type", "course");
 
-      const totalRevenue = payments?.reduce((sum, p) => sum + Number(p.amount), 0) || 0;
+      // Get completion stats
+      const { data: progress } = await supabase
+        .from("progress")
+        .select("user_id, course_id, completed")
+        .in("course_id", courseIds.length ? courseIds : [''])
+        .eq("completed", true);
+
+      // Calculate completion rate
       const totalEnrollments = enrollments?.length || 0;
+      const uniqueCompletions = new Set(progress?.map(p => `${p.user_id}-${p.course_id}`) || []).size;
+      const completionRate = totalEnrollments > 0 ? Math.round((uniqueCompletions / totalEnrollments) * 100) : 0;
+
+      const totalRevenue = payments?.reduce((sum, p) => sum + Number(p.amount), 0) || 0;
       const avgRevenuePerCourse = courseIds.length > 0 ? totalRevenue / courseIds.length : 0;
 
       return {
@@ -42,6 +53,7 @@ export const InstructorAnalytics = () => {
         totalEnrollments,
         avgRevenuePerCourse,
         totalCourses: courseIds.length,
+        completionRate,
       };
     },
   });
@@ -69,8 +81,8 @@ export const InstructorAnalytics = () => {
       bgColor: "bg-accent/10",
     },
     {
-      title: "Avg Revenue/Course",
-      value: `KES ${Math.round(analytics?.avgRevenuePerCourse || 0).toLocaleString()}`,
+      title: "Completion Rate",
+      value: `${analytics?.completionRate || 0}%`,
       icon: TrendingUp,
       color: "text-amber-600 dark:text-amber-400",
       bgColor: "bg-amber-500/10",

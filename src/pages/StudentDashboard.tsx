@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const StudentDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [stats, setStats] = useState({ enrolled: 0, videos: 0, quizzes: 0, avgScore: 0 });
+  const [stats, setStats] = useState({ enrolled: 0, videos: 0, quizzes: 0, avgScore: 0, completed: 0 });
   const [courses, setCourses] = useState<any[]>([]);
   const [enrolledCourses, setEnrolledCourses] = useState<Set<string>>(new Set());
   const [myCourses, setMyCourses] = useState<any[]>([]);
@@ -55,10 +55,40 @@ const StudentDashboard = () => {
         setMyCourses(enrolledCoursesData || []);
       }
 
-      const [videos, quizzes] = await Promise.all([
+      const [videos, quizzes, progress] = await Promise.all([
         supabase.from("videos").select("*", { count: "exact" }).in("course_id", enrolledIds.length ? enrolledIds : ['']),
         supabase.from("quizzes").select("*", { count: "exact" }).in("course_id", enrolledIds.length ? enrolledIds : ['']),
+        supabase.from("progress").select("course_id, video_id, completed").eq("user_id", user.id).eq("completed", true).in("course_id", enrolledIds.length ? enrolledIds : [''])
       ]);
+
+      // Count completed courses (all videos watched)
+      const { data: allVideos } = await supabase
+        .from("videos")
+        .select("id, course_id")
+        .in("course_id", enrolledIds.length ? enrolledIds : ['']);
+
+      const courseVideoCount = new Map<string, number>();
+      allVideos?.forEach(video => {
+        const count = courseVideoCount.get(video.course_id) || 0;
+        courseVideoCount.set(video.course_id, count + 1);
+      });
+
+      const userCourseProgress = new Map<string, Set<string>>();
+      progress.data?.forEach(p => {
+        if (!p.video_id) return;
+        if (!userCourseProgress.has(p.course_id)) {
+          userCourseProgress.set(p.course_id, new Set());
+        }
+        userCourseProgress.get(p.course_id)?.add(p.video_id);
+      });
+
+      let completedCourses = 0;
+      userCourseProgress.forEach((videoIds, courseId) => {
+        const totalVideos = courseVideoCount.get(courseId) || 0;
+        if (totalVideos > 0 && videoIds.size === totalVideos) {
+          completedCourses++;
+        }
+      });
 
       const avgScore = quizResults.data && quizResults.data.length > 0
         ? quizResults.data.reduce((sum, r) => sum + (r.percent || 0), 0) / quizResults.data.length
@@ -69,6 +99,7 @@ const StudentDashboard = () => {
         videos: videos.count || 0,
         quizzes: quizzes.count || 0,
         avgScore: Math.round(avgScore),
+        completed: completedCourses,
       });
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -142,7 +173,7 @@ const StudentDashboard = () => {
               <p className="text-muted-foreground">{user?.email}</p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8 animate-fade-in-up">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 mb-8 animate-fade-in-up">
               <Card className="card-hover">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
@@ -159,13 +190,26 @@ const StudentDashboard = () => {
               <Card className="card-hover">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-medium">Videos Watched</CardTitle>
+                    <CardTitle className="text-sm font-medium">Completed</CardTitle>
+                    <Trophy className="w-4 h-4 text-green-600 dark:text-green-400 icon-hover" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.completed}</div>
+                  <p className="text-xs text-muted-foreground">Courses finished</p>
+                </CardContent>
+              </Card>
+
+              <Card className="card-hover">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium">Videos Available</CardTitle>
                     <Video className="w-4 h-4 text-muted-foreground icon-hover" />
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats.videos}</div>
-                  <p className="text-xs text-muted-foreground">Available videos</p>
+                  <p className="text-xs text-muted-foreground">Learning materials</p>
                 </CardContent>
               </Card>
 
@@ -197,10 +241,11 @@ const StudentDashboard = () => {
             </div>
 
             <Tabs defaultValue="enrolled" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="enrolled" className="transition-all duration-300">My Courses</TabsTrigger>
-                <TabsTrigger value="available" className="transition-all duration-300">Browse Courses</TabsTrigger>
-                <TabsTrigger value="payments" className="transition-all duration-300">Payment History</TabsTrigger>
+                <TabsTrigger value="completed" className="transition-all duration-300">Completed</TabsTrigger>
+                <TabsTrigger value="available" className="transition-all duration-300">Browse</TabsTrigger>
+                <TabsTrigger value="payments" className="transition-all duration-300">Payments</TabsTrigger>
               </TabsList>
 
               <TabsContent value="enrolled" className="animate-fade-in">
@@ -245,6 +290,49 @@ const StudentDashboard = () => {
               </CardContent>
             </Card>
           </TabsContent>
+
+              <TabsContent value="completed" className="animate-fade-in">
+                <Card className="card-hover">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-green-500/10">
+                        <Trophy className="w-5 h-5 text-green-600 dark:text-green-400 icon-hover" />
+                      </div>
+                      <div>
+                        <CardTitle>Completed Courses</CardTitle>
+                        <CardDescription>Courses you've finished - well done!</CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {loading ? (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {[...Array(3)].map((_, i) => (
+                          <Skeleton key={i} className="h-64 w-full" />
+                        ))}
+                      </div>
+                    ) : stats.completed > 0 ? (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {myCourses.map((course) => (
+                          <CourseCard
+                            key={course.id}
+                            course={course}
+                            enrolled={true}
+                            showPrice={false}
+                            onViewCourse={handleViewCourse}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12 text-muted-foreground">
+                        <Trophy className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                        <p>No completed courses yet.</p>
+                        <p className="text-sm mt-2">Keep learning to earn your first completion badge!</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
               <TabsContent value="available" className="animate-fade-in">
                 <Card className="card-hover">
