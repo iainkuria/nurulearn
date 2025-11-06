@@ -57,9 +57,8 @@ export const CourseCard = ({ course, onEnroll, enrolled, showPrice = true, onVie
   };
 
   const handleCardClick = () => {
-    if (enrolled && onViewCourse) {
-      onViewCourse(course);
-    }
+    // Navigate to course details page
+    window.location.href = `/course/${course.id}`;
   };
 
   return (

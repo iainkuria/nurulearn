@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Video, FileText, Users, Plus, BarChart3 } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -14,6 +15,7 @@ import { InstructorAnalytics } from "@/components/InstructorAnalytics";
 
 const InstructorDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({ courses: 0, videos: 0, materials: 0, students: 0 });
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -52,9 +54,15 @@ const InstructorDashboard = () => {
       <Header />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Instructor Dashboard</h2>
-          <p className="text-muted-foreground">{user?.email}</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">Instructor Dashboard</h2>
+            <p className="text-muted-foreground">{user?.email}</p>
+          </div>
+          <Button onClick={() => navigate("/create-course")} size="lg" className="gap-2">
+            <Plus className="w-5 h-5" />
+            Create New Course
+          </Button>
         </div>
 
         <Card className="mb-8 border-none shadow-lg">
