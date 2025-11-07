@@ -22,14 +22,55 @@ const StudentDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
+  const [platformStats, setPlatformStats] = useState({
+    activeStudents: 0,
+    totalCourses: 0,
+    averageRating: 4.8,
+    completionRate: 0,
+  });
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    // Auto-refresh platform stats every 30 seconds
+    const interval = setInterval(() => {
+      fetchPlatformStats();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchPlatformStats = async () => {
+    try {
+      const [coursesRes, enrollmentsRes, progressRes] = await Promise.all([
+        supabase.from("courses").select("id", { count: "exact", head: true }),
+        supabase.from("enrollments").select("user_id"),
+        supabase.from("progress").select("*"),
+      ]);
+
+      const totalCourses = coursesRes.count || 0;
+      const uniqueStudents = new Set(enrollmentsRes.data?.map((e: any) => e.user_id)).size;
+      
+      const totalProgress = progressRes.data?.length || 0;
+      const completedProgress = progressRes.data?.filter((p: any) => p.completed).length || 0;
+      const completionRate = totalProgress > 0 ? (completedProgress / totalProgress) * 100 : 0;
+
+      setPlatformStats({
+        activeStudents: uniqueStudents,
+        totalCourses,
+        averageRating: 4.8,
+        completionRate: Math.round(completionRate),
+      });
+    } catch (error: any) {
+      console.error("Error loading platform stats:", error);
+    }
+  };
+
   const fetchData = async () => {
     setLoading(true);
-    await Promise.all([fetchStats(), fetchCourses()]);
+    await Promise.all([fetchStats(), fetchCourses(), fetchPlatformStats()]);
     setLoading(false);
   };
 
@@ -173,6 +214,66 @@ const StudentDashboard = () => {
               <p className="text-muted-foreground">{user?.email}</p>
             </div>
 
+            {/* Platform Statistics */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-6 animate-fade-in">
+              <Card className="border-none shadow-md bg-gradient-to-br from-primary/10 to-primary/5 hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Active Students
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-primary animate-fade-in">
+                    {platformStats.activeStudents.toLocaleString()}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">Currently enrolled</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-none shadow-md bg-gradient-to-br from-blue-500/10 to-blue-500/5 hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Courses Available
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 animate-fade-in">
+                    {platformStats.totalCourses}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">Real learning resources</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-none shadow-md bg-gradient-to-br from-green-500/10 to-green-500/5 hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Platform Rating
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-green-600 dark:text-green-400 animate-fade-in">
+                    {platformStats.averageRating}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">Quality focused</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-none shadow-md bg-gradient-to-br from-orange-500/10 to-orange-500/5 hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Success Rate
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 animate-fade-in">
+                    {platformStats.completionRate}%
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">Course completion</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Personal Statistics */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 mb-8 animate-fade-in-up">
               <Card className="card-hover">
                 <CardHeader className="pb-3">

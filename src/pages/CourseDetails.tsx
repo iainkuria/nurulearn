@@ -45,7 +45,7 @@ export default function CourseDetails() {
       // Fetch course details
       const { data: courseData, error: courseError } = await supabase
         .from("courses")
-        .select("*, profiles(name)")
+        .select("*")
         .eq("id", id)
         .single();
 
@@ -140,18 +140,27 @@ export default function CourseDetails() {
 
   const handleDownloadNotes = async (note: any) => {
     try {
-      const link = document.createElement("a");
-      link.href = note.file_url;
-      link.download = note.title;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      toast({ title: "Download started" });
+      // Try to open in new tab first
+      const newTab = window.open(note.file_url, '_blank');
+      
+      if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+        // If popup blocked, fall back to download
+        const link = document.createElement("a");
+        link.href = note.file_url;
+        link.download = note.title || 'course-material.pdf';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast({ title: "Download started" });
+      } else {
+        toast({ title: "Opening resource in new tab" });
+      }
     } catch (error: any) {
       toast({
-        title: "Download failed",
-        description: error.message,
+        title: "Could not open resource",
+        description: "Please check your browser settings and try again",
         variant: "destructive",
       });
     }

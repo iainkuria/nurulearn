@@ -86,25 +86,41 @@ export const CourseViewer = ({ course, open, onOpenChange }: CourseViewerProps) 
     }
   };
 
-  const openPdfInNewTab = (url: string) => {
-    window.open(url, "_blank");
-    trackProgress();
-    toast({
-      title: "Document Opened",
-      description: "Your document has opened in a new tab.",
-    });
-  };
-
-  const handleDownloadPdf = (url: string, title: string) => {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = title;
-    link.click();
-    trackProgress();
-    toast({
-      title: "Download Started",
-      description: "Your resource is being downloaded.",
-    });
+  const handleDownload = async (note: any) => {
+    try {
+      // Try to open PDF in new tab for viewing
+      const newTab = window.open(note.file_url, '_blank');
+      
+      if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+        // If popup blocked, fall back to download
+        const link = document.createElement("a");
+        link.href = note.file_url;
+        link.download = note.title || 'course-material.pdf';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast({ 
+          title: "Download started",
+          description: "If the file doesn't open, check your downloads folder"
+        });
+      } else {
+        toast({ 
+          title: "Opening PDF",
+          description: "Your resource has opened in a new tab"
+        });
+      }
+      
+      // Track progress for PDF viewing
+      trackProgress();
+    } catch (error: any) {
+      toast({
+        title: "Could not open resource",
+        description: "Please check your browser settings and try again",
+        variant: "destructive",
+      });
+    }
   };
 
   useEffect(() => {
@@ -169,13 +185,9 @@ export const CourseViewer = ({ course, open, onOpenChange }: CourseViewerProps) 
                     <span className="truncate">{activePdf.title}</span>
                   </h3>
                   <div className="flex gap-2 flex-shrink-0">
-                    <Button onClick={() => handleDownloadPdf(activePdf.file_url, activePdf.title)} variant="outline" size="sm">
-                      <Download className="w-4 h-4 mr-2" />
-                      <span className="hidden sm:inline">Download</span>
-                    </Button>
-                    <Button onClick={() => openPdfInNewTab(activePdf.file_url)} variant="outline" size="sm">
+                    <Button onClick={() => handleDownload(activePdf)} variant="outline" size="sm">
                       <ExternalLink className="w-4 h-4 mr-2" />
-                      <span className="hidden sm:inline">New Tab</span>
+                      <span className="hidden sm:inline">View / Download</span>
                     </Button>
                   </div>
                 </div>
