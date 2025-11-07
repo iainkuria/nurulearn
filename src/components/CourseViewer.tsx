@@ -185,9 +185,17 @@ export const CourseViewer = ({ course, open, onOpenChange }: CourseViewerProps) 
                     <span className="truncate">{activePdf.title}</span>
                   </h3>
                   <div className="flex gap-2 flex-shrink-0">
-                    <Button onClick={() => handleDownload(activePdf)} variant="outline" size="sm">
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      <span className="hidden sm:inline">View / Download</span>
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={activePdf.file_url} target="_blank" rel="noopener">
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        <span className="hidden sm:inline">Open in New Tab</span>
+                      </a>
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={activePdf.file_url} download>
+                        <Download className="w-4 h-4 mr-2" />
+                        <span className="hidden sm:inline">Download</span>
+                      </a>
                     </Button>
                   </div>
                 </div>

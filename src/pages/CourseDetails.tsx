@@ -359,13 +359,11 @@ export default function CourseDetails() {
                             className="flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
                           >
                             <span className="font-medium">{note.title}</span>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDownloadNotes(note)}
-                            >
-                              <Download className="w-4 h-4 mr-2" />
-                              Download
+                            <Button variant="outline" size="sm" asChild>
+                              <a href={note.file_url} target="_blank" rel="noopener">
+                                <Download className="w-4 h-4 mr-2" />
+                                Download
+                              </a>
                             </Button>
                           </div>
                         ))}
