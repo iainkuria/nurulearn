@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Video, FileText, Users, Plus, BarChart3 } from "lucide-react";
+import { BookOpen, Video, FileText, Plus, BarChart3 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { CourseManager } from "@/components/CourseManager";
@@ -11,6 +11,8 @@ import { QuizCreator } from "@/components/QuizCreator";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
+import { Users, Star, TrendingUp, DollarSign } from "lucide-react";
 import { InstructorAnalytics } from "@/components/InstructorAnalytics";
 
 const InstructorDashboard = () => {
@@ -131,57 +133,69 @@ const InstructorDashboard = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <Card className="border-none shadow-md bg-gradient-to-br from-primary/10 to-primary/5 hover:shadow-lg transition-shadow">
+          <Card className="border-none shadow-md bg-gradient-to-br from-primary/10 to-primary/5 hover:shadow-lg transition-all duration-300 card-hover">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Students
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Students
+                </CardTitle>
+                <Users className="w-5 h-5 text-primary" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-primary animate-fade-in">
-                {analyticsStats.totalStudents.toLocaleString()}
+              <div className="text-3xl font-bold text-primary">
+                <AnimatedCounter end={analyticsStats.totalStudents} />
               </div>
               <p className="text-xs text-muted-foreground mt-1">Across all courses</p>
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-md bg-gradient-to-br from-green-500/10 to-green-500/5 hover:shadow-lg transition-shadow">
+          <Card className="border-none shadow-md bg-gradient-to-br from-green-500/10 to-green-500/5 hover:shadow-lg transition-all duration-300 card-hover">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Revenue
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Revenue
+                </CardTitle>
+                <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400 animate-fade-in">
-                KES {analyticsStats.totalRevenue.toLocaleString()}
+              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                KES <AnimatedCounter end={analyticsStats.totalRevenue} />
               </div>
               <p className="text-xs text-muted-foreground mt-1">All time earnings</p>
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-md bg-gradient-to-br from-blue-500/10 to-blue-500/5 hover:shadow-lg transition-shadow">
+          <Card className="border-none shadow-md bg-gradient-to-br from-blue-500/10 to-blue-500/5 hover:shadow-lg transition-all duration-300 card-hover">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Average Rating
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Average Rating
+                </CardTitle>
+                <Star className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 animate-fade-in">
-                {analyticsStats.avgRating}
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                <AnimatedCounter end={analyticsStats.avgRating} decimals={1} />
               </div>
               <p className="text-xs text-muted-foreground mt-1">From student reviews</p>
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-md bg-gradient-to-br from-orange-500/10 to-orange-500/5 hover:shadow-lg transition-shadow">
+          <Card className="border-none shadow-md bg-gradient-to-br from-orange-500/10 to-orange-500/5 hover:shadow-lg transition-all duration-300 card-hover">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Completion Rate
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Completion Rate
+                </CardTitle>
+                <TrendingUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 animate-fade-in">
-                {analyticsStats.completionRate}%
+              <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
+                <AnimatedCounter end={analyticsStats.completionRate} suffix="%" />
               </div>
               <p className="text-xs text-muted-foreground mt-1">Students finishing courses</p>
             </CardContent>

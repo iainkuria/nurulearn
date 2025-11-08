@@ -4,6 +4,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { GraduationCap } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import nuruLearnLogo from "@/assets/nurulearn-logo.png";
 
 export function Header() {
   const location = useLocation();
@@ -19,12 +20,11 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-300 shadow-sm">
       <div className="container mx-auto flex h-14 sm:h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
-            <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-primary icon-hover" />
-          </div>
-          <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-            NuruLearn
-          </span>
+          <img 
+            src={nuruLearnLogo} 
+            alt="NuruLearn" 
+            className="h-8 sm:h-10 w-auto object-contain transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-lg"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,11 +9,19 @@ import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Download, Video, CheckCircle2, Lock, User, ArrowLeft } from "lucide-react";
+import { BookOpen, Download, Video, CheckCircle2, Lock, User, ArrowLeft, ChevronRight, Home } from "lucide-react";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { CourseViewer } from "@/components/CourseViewer";
 import { PaymentButton } from "@/components/PaymentButton";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function CourseDetails() {
   const { id } = useParams();
@@ -205,7 +213,39 @@ export default function CourseDetails() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 animate-fade-in">
+        {/* Breadcrumb Navigation */}
+        <Breadcrumb className="mb-6">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/" className="flex items-center gap-1 hover:text-primary transition-colors">
+                  <Home className="w-4 h-4" />
+                  Home
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator>
+              <ChevronRight className="w-4 h-4" />
+            </BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/dashboard" className="hover:text-primary transition-colors">
+                  Courses
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator>
+              <ChevronRight className="w-4 h-4" />
+            </BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-primary font-medium">
+                {course?.title || "Course Details"}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+
         <Button
           variant="ghost"
           onClick={() => navigate(-1)}
@@ -248,7 +288,12 @@ export default function CourseDetails() {
               <CardHeader>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <CardTitle className="text-3xl mb-2">{course.title}</CardTitle>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-1 w-16 bg-gradient-to-r from-primary to-accent rounded-full"></div>
+                    </div>
+                    <CardTitle className="text-3xl mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                      {course.title}
+                    </CardTitle>
                     <CardDescription className="text-base">
                       {course.description}
                     </CardDescription>

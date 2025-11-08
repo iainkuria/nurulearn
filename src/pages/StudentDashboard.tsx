@@ -11,6 +11,8 @@ import { PaymentHistory } from "@/components/PaymentHistory";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardSkeleton } from "@/components/DashboardSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
+import { Users, Star, TrendingUp } from "lucide-react";
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -216,57 +218,69 @@ const StudentDashboard = () => {
 
             {/* Platform Statistics */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-6 animate-fade-in">
-              <Card className="border-none shadow-md bg-gradient-to-br from-primary/10 to-primary/5 hover:shadow-lg transition-shadow">
+              <Card className="border-none shadow-md bg-gradient-to-br from-primary/10 to-primary/5 hover:shadow-lg transition-all duration-300 card-hover">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Active Students
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      Active Students
+                    </CardTitle>
+                    <Users className="w-5 h-5 text-primary" />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-primary animate-fade-in">
-                    {platformStats.activeStudents.toLocaleString()}
+                  <div className="text-3xl font-bold text-primary">
+                    <AnimatedCounter end={platformStats.activeStudents} />
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">Currently enrolled</p>
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-md bg-gradient-to-br from-blue-500/10 to-blue-500/5 hover:shadow-lg transition-shadow">
+              <Card className="border-none shadow-md bg-gradient-to-br from-blue-500/10 to-blue-500/5 hover:shadow-lg transition-all duration-300 card-hover">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Courses Available
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      Courses Available
+                    </CardTitle>
+                    <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 animate-fade-in">
-                    {platformStats.totalCourses}
+                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                    <AnimatedCounter end={platformStats.totalCourses} />
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">Real learning resources</p>
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-md bg-gradient-to-br from-green-500/10 to-green-500/5 hover:shadow-lg transition-shadow">
+              <Card className="border-none shadow-md bg-gradient-to-br from-green-500/10 to-green-500/5 hover:shadow-lg transition-all duration-300 card-hover">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Platform Rating
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      Platform Rating
+                    </CardTitle>
+                    <Star className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-green-600 dark:text-green-400 animate-fade-in">
-                    {platformStats.averageRating}
+                  <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                    <AnimatedCounter end={platformStats.averageRating} decimals={1} />
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">Quality focused</p>
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-md bg-gradient-to-br from-orange-500/10 to-orange-500/5 hover:shadow-lg transition-shadow">
+              <Card className="border-none shadow-md bg-gradient-to-br from-orange-500/10 to-orange-500/5 hover:shadow-lg transition-all duration-300 card-hover">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Success Rate
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      Success Rate
+                    </CardTitle>
+                    <TrendingUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 animate-fade-in">
-                    {platformStats.completionRate}%
+                  <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
+                    <AnimatedCounter end={platformStats.completionRate} suffix="%" />
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">Course completion</p>
                 </CardContent>

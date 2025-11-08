@@ -46,18 +46,23 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Help Center
+                  Privacy Policy
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
                   Terms of Service
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Privacy Policy
                 </a>
               </li>
             </ul>
@@ -85,31 +90,47 @@ export function Footer() {
 
         <div className="border-t mt-8 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-muted-foreground">
-              &copy; 2025 NuruLearn. All rights reserved.
-            </p>
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted-foreground">
+                &copy; 2025 NuruLearn. All rights reserved.
+              </p>
+              <p className="text-xs text-muted-foreground/70 mt-2 italic max-w-2xl">
+                "Education is the light of progress — and NuruLearn is how we carry that light forward."
+              </p>
+            </div>
             <div className="flex items-center gap-4">
               <a 
-                href="https://linkedin.com" 
+                href="https://linkedin.com/company/nurulearn" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="w-5 h-5" />
               </a>
               <a 
-                href="https://github.com" 
+                href="https://github.com/nurulearn" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110"
                 aria-label="GitHub"
               >
                 <Github className="w-5 h-5" />
               </a>
               <a 
-                href="mailto:support@nurulearn.com"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                href="https://twitter.com/nurulearn" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110"
+                aria-label="Twitter/X"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+              <a 
+                href="mailto:hello@nurulearn.com"
+                className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110"
                 aria-label="Email"
               >
                 <Mail className="w-5 h-5" />
