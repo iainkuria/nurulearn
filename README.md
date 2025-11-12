@@ -64,7 +64,7 @@ It empowers **students**, **instructors**, and **institutions** through a simple
 | ⚛️ **React + TypeScript** | Component-based, scalable frontend |
 | 🎨 **Tailwind CSS + shadcn/ui** | Beautiful, responsive design system |
 | ⚡ **Vite** | Lightning-fast build environment |
-| 🗄️ **PostgreSQL (Supabase)** | Secure relational database |
+| 🗄️ **MongoDB** | NoSQL document database for modern web applications |
 | ☁️ **Cloud Storage** | Store videos, PDFs, and media files |
 | 💳 **Paystack API** | Payment and verification services |
 
