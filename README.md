@@ -9,7 +9,7 @@
 
 ## 🚀 Quick Links
 
-- 🌐 [Live Demo](#)
+- 🌐 [Live Demo](https://nuru-learn-hub.vercel.app/)
 - 📊 [Pitch Deck](https://gamma.app/docs/NuruLearn-Lighting-the-Path-to-Smarter-Learning-kcem6j7h7dxdu67?mode=doc)
 
 ---
